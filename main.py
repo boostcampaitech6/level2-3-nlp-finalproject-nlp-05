@@ -4,7 +4,7 @@ from loguru import logger
 from sqlmodel import SQLModel
 
 from database import engine
-from dependency import load_model
+from dependency import load_sentence_generator, load_poem_generator
 from config import config
 from api import router
 
@@ -15,13 +15,22 @@ async def keyword_lifespan(app: FastAPI):
     logger.info('Creating Database tables')
     SQLModel.metadata.create_all( engine )
 
-    # Load model
-    logger.info('Loading Model(Metaphor Sentence Generator)')
-    load_model(config.sentence_generating_model_path)
-    logger.info('Loading Model(Poem Generator)')
-    load_model(config.poem_generating_model_path)
+    # # Load model
+    # logger.info('Loading Model(Metaphor Sentence Generator)')
+    # load_sentence_generator(config.sentence_generating_model_path)
+    # logger.info('Loading Model(Poem Generator)')
+    # load_poem_generator(config.poem_generating_model_path)
 
     yield
 
 app = FastAPI(lifespan=keyword_lifespan)
+app.include_router( router )
 
+@app.get('/main')
+def root():
+    return 'Welcome to our service'
+
+if __name__ == '__main__':
+    import uvicorn
+
+    uvicorn.run(app, host='0.0.0.0', port=8000)

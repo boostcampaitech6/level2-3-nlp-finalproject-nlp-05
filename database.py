@@ -7,10 +7,10 @@ import datetime
 class GeneratedSentence(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     adj_word: str
-    generated_sentence: str
+    generated_sentence1: str
+    generated_sentence2: str
+    generated_sentence3: str
     created_at: datetime.datetime = Field(default_factory=datetime.datetime.now)
-
-    poem: Optional['GeneratedPoemAndImage'] = Relationship(sa_relationship_kwargs={'uselist': False, 'back_populates': 'generated_sentence'})
 
 # 생성된 시와 이미지를 저장하는 테이블
 class GeneratedPoemAndImage(SQLModel, table=True):
@@ -20,6 +20,6 @@ class GeneratedPoemAndImage(SQLModel, table=True):
     generated_image_path: str
     created_at: datetime.datetime = Field(default_factory=datetime.datetime.now)
 
-    generated_sentence: GeneratedSentence = Relationship(back_populates='generated_poem_and_image')
+
 
 engine = create_engine(config.db_url)
