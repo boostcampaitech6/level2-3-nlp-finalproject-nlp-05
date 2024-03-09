@@ -7,12 +7,15 @@ class SentenceGenerationRequest(BaseModel):
 
 # 생성된 문장을 받는 Response Schema
 class SentenceGenerationResponse(BaseModel):
-    result_sentence: str
+    result_sentence1: str
+    result_sentence2: str
+    result_sentence3: str
 
 # 시를 생성하기 시작할 문장을 모델에 전달할 Request Schema
-class PoemGenerationRequest(BaseModel):
+class PoemImageGenerationRequest(BaseModel):
     input_sentence: str
 
-# 생성된 시를 받는 Response Schema
-class PoemGenerationResponse(BaseModel):
+# 생성된 시와 이미지를 받는 Response Schema
+class PoemImageGenerationResponse(BaseModel):
     result_poem: str
+    result_image_path: str

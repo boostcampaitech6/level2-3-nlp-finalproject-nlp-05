@@ -23,5 +23,3 @@ class GeneratedPoemAndImage(SQLModel, table=True):
     generated_sentence: GeneratedSentence = Relationship(back_populates='generated_poem_and_image')
 
 engine = create_engine(config.db_url)
-
-#database
