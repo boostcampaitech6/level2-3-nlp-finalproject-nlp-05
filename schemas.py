@@ -1,5 +1,5 @@
-from pydantic import BaseModel
-
+from pydantic import BaseModel, Field
+from typing import Optional
 
 # 형용사 단어를 선택했을 때 문장생성을 위해 모델에 전달할 Request Schema
 class SentenceGenerationRequest(BaseModel):
@@ -18,4 +18,4 @@ class PoemImageGenerationRequest(BaseModel):
 # 생성된 시와 이미지를 받는 Response Schema
 class PoemImageGenerationResponse(BaseModel):
     result_poem: str
-    result_image: str
+    result_image_url: Optional[str] = Field(default=None, description="The path to the generated image")

@@ -35,6 +35,7 @@ def generate_sentences(request: SentenceGenerationRequest) -> SentenceGeneration
 def generate_poem(request: PoemImageGenerationRequest) -> PoemImageGenerationResponse:
     from openai import OpenAI
 
+    # OpenAI API_KEY 설정
     API_KEY = None
     client = OpenAI(api_key=API_KEY)
     
@@ -47,13 +48,12 @@ def generate_poem(request: PoemImageGenerationRequest) -> PoemImageGenerationRes
     generated_poem = 'dummy poem' # TODO : 모델 구조에 따라 정의 다를듯
     
     # 이미지 생성
-    # response = client.image.generate(model='dall-e-3',
-    #                                  prompt=selected_sentence,
-    #                                  size='1024x1024',
-    #                                  quality='standard',
-    #                                  n=1)
-    # generated_image = response.data[0].url
-    generated_image = 'dummy image'
+    response = client.images.generate(model='dall-e-3',
+                                     prompt=selected_sentence,
+                                     size='1024x1024',
+                                     quality='standard',
+                                     n=1)
+    generated_image_url = response.data[0].url
     
     return PoemImageGenerationResponse(result_poem=generated_poem,
-                                       result_image_path=generated_image)
+                                       result_image_url=generated_image_url)
