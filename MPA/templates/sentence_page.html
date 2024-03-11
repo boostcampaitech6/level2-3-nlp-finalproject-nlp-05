@@ -24,27 +24,70 @@
             <form id="sentenceForm" action="/submit_sentence" method="post">
                 <div class="mb-4">
                     <div class="flex items-center mb-2">
-                        <input id="sentence1" type="radio" name="sentence" value="{{ sentence[0] | e }}" class="mr-2">
+                        <input id="sentence1" type="radio" name="sentence" value="{{ sentence[0] | e }}" class="mr-2" onchange="checkSelection()">
                         <label for="sentence1" class="text-gray-700">{{ sentence[0] }}</label>
                     </div>
                     <div class="flex items-center mb-2">
-                        <input id="sentence2" type="radio" name="sentence" value="{{ sentence[1] | e }}" class="mr-2">
+                        <input id="sentence2" type="radio" name="sentence" value="{{ sentence[1] | e }}" class="mr-2" onchange="checkSelection()">
                         <label for="sentence2" class="text-gray-700">{{ sentence[1] }}</label>
                     </div>
                     <div class="flex items-center mb-2">
-                        <input id="sentence3" type="radio" name="sentence" value="{{ sentence[2] | e }}" class="mr-2">
-                        <label for="sentencee3" class="text-gray-700">{{ sentence[2] }}</label>
+                        <input id="sentence3" type="radio" name="sentence" value="{{ sentence[2] | e }}" class="mr-2" onchange="checkSelection()">
+                        <label for="sentence3" class="text-gray-700">{{ sentence[2] }}</label>
                     </div>
                 </div>
                 <div class="flex justify-between">
-                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition duration-300">다시 생성</button>
+                    <button id="reButton" type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition duration-300">다시 생성</button>
                     <div>
-                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 mr-2">선택완료</button>
-                        <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition duration-300">뒤로가기</button>
+                        <button id="submitButton" type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 mr-2">선택완료</button>
+                        <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition duration-300" onclick="window.location.href = '/';">뒤로가기</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
+<script>
+    // 라디오 버튼 선택 확인 
+    function checkSelection() {
+        const submitButton = document.getElementById('submitButton');
+        const radios = document.forms['sentenceForm'].elements['sentence'];
+        let isSelected = false;
+        for(let i = 0; i < radios.length; i++) {
+        if(radios[i].checked) isSelected = true;
+        }
+        submitButton.disabled = !isSelected; 
+    }
+    // 함수 초기 상태 확인
+    document.addEventListener('DOMContentLoaded', checkSelection);
+
+    function reGenerate() {
+        fetch('/reGenerate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                mood: '{{ mood | tojson}}'
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            updateSentences(data.sentence);
+        })
+        .catch((error) => {
+            console.error('Error:', error)
+        });
+    }
+
+    function updateSentences(sentence) {
+        for (let i = 0; i < sentence.length; i++) {
+            document.getElementById(`sentence${i+1}`).value = sentence[i];
+            document.querySelector(`label[for=sentence${i+1}]`).textContent = sentence[i];
+        }
+    }
+
+    // 함수 초기 상태 확인
+    document.getElementById("reButton").addEventListener('click', reGenerate);
+</script>
 </body>
 </html>

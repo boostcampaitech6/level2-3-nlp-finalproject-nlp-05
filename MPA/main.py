@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from dependencies import load_model_tokenizer, get_model_tokenizer, load_poem_model_tokenizer, get_poem_model_tokenizer
 from config import config
 from loguru import logger
-
+from pydantic import BaseModel
 import uvicorn
 
 import time
@@ -105,6 +105,30 @@ async def show_result(request: Request, sentence: str):
     # logger.info("poem : {}", poem)
     
     return templates.TemplateResponse("output_page.html", {"request": request, "sentence": sentence, "poem": poem})
+
+class MoodRequest(BaseModel):
+    mood: str
+    
+@app.post("/reGenerate")
+async def reGenerate(request: MoodRequest):
+    mood = request.mood
+    
+    # 모델&토크나이저 load
+    model, tokenizer = get_model_tokenizer()
+    
+    # input 데이터 전처리
+    inputs = tokenizer(mood, return_tensors="pt")
+    # 예측
+    outputs = model.generate(
+        **inputs,
+        num_beams=3,
+        num_return_sequences=3,  # 반환할 시퀀스 수
+        do_sample=True
+    )
+    # 결과 디코딩
+    sentence = [tokenizer.decode(output, skip_special_tokens=True) for output in outputs]
+    
+    return {"sentence": sentence}
 
 
 if __name__=='__main__':
