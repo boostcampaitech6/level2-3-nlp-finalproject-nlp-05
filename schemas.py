@@ -18,4 +18,4 @@ class PoemImageGenerationRequest(BaseModel):
 # 생성된 시와 이미지를 받는 Response Schema
 class PoemImageGenerationResponse(BaseModel):
     result_poem: str
-    result_image_url: Optional[str] = Field(default=None, description="The path to the generated image")
+    result_image_url: Optional[str] = Field(default='OPEN_AI_API_KEY is not selected', description="The path to the generated image")
