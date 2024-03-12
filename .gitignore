@@ -1,3 +1,5 @@
 .cache/*
-bash_history.sh
+.bash_history
 .gitconfig
+.local/*
+.ipython/*
