@@ -1,3 +1,11 @@
-.cache/*
-bash_history.sh
+.cache
+.conda
+.ipython
+.local
+.nv
 .gitconfig
+.bash_history
+nltk_data/*
+ML/Metaphor_Gen/code/outputs
+ML/Metaphor_Gen/code/.lock
+.local
