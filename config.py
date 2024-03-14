@@ -2,8 +2,7 @@ from pydantic import Field
 from pydantic_settings import BaseSettings
 
 class Config(BaseSettings):
-    sentence_generating_model_path: str = Field(default='model1_path.joblib', env='MODEL_PATH')
-    poem_generating_model_path: str = Field(default='model2_path.joblib', env='MODEL_PATH')
-    app_env: str = Field(default='local', env='APP_ENV')
+    # model_path: str = Field(default="./output", env="MODEL_PATH")
+    poem_model_path: str = Field(default="gunwoo723/kogpt2-generate-poem", env="POEM_MODEL_PATH")
 
 config = Config()
