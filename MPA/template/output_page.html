@@ -6,29 +6,15 @@
     <title>오늘의 시</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        .content-container {
-            max-width: 80%; 
-            margin: auto; 
-        }
-        .image-placeholder {
-            background-color: #E5E7EB;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #9CA3AF;
-            font-size: 1.5rem;
-            aspect-ratio: 1 / 1; 
-            width: 100%; 
-        }
-        .poem-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between; 
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
 </head>
 <body class="bg-white text-gray-800">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script>
+    $(window).load(function () {
+        $('body').sakura();
+    });
+    </script>
     <div class="container mx-auto p-4">
         <h1 class="text-2xl font-semibold text-center mb-6">당신의 오늘과 어울리는 시</h1>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 content-container">
@@ -40,12 +26,12 @@
             <div class="border rounded-lg p-4 poem-container">
                 <div>
                     <h2 class="text-xl font-semibold mb-4">생성된 시</h2>
-                    <pre class="text-gray-600">{{ poem }}...</pre>
+                    <pre class="text-black-900 poem-font">{{ poem }}...</pre>
                 </div>
             </div>
         </div>
         <div class="flex justify-center gap-4 mb-4">
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            <button id="saveButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 이미지와 시 저장
             </button>
             <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded" onclick="window.location.href = '/';">
@@ -53,5 +39,6 @@
             </button>
         </div>
     </div>
+    <script src="/static/js/sakura.js"></script>
 </body>
 </html>
