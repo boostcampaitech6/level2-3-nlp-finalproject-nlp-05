@@ -6,13 +6,15 @@
     <title>오늘의 시</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
 </head>
 <body class="bg-gray-100">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script>
+    $(window).load(function () {
+        $('body').sakura();
+    });
+    </script>
     <div class="min-h-screen flex items-center justify-center">
         <div class="max-w-lg mx-auto my-10 p-6 bg-white shadow-lg rounded-lg">
             <h2 class="text-2xl font-bold mb-4">#2. 문장 선택 페이지</h2>
@@ -24,15 +26,15 @@
             <form id="sentenceForm" action="/submit_sentence" method="post">
                 <div class="mb-4">
                     <div class="flex items-center mb-2">
-                        <input id="sentence1" type="radio" name="sentence" value="{{ sentence[0] | e }}" class="mr-2" onchange="checkSelection()">
+                        <input id="sentence1" type="radio" name="sentence" value="{{ sentence[0] | e }}" class="form-radio mr-2" onchange="checkSelection()">
                         <label for="sentence1" class="text-gray-700">{{ sentence[0] }}</label>
                     </div>
                     <div class="flex items-center mb-2">
-                        <input id="sentence2" type="radio" name="sentence" value="{{ sentence[1] | e }}" class="mr-2" onchange="checkSelection()">
+                        <input id="sentence2" type="radio" name="sentence" value="{{ sentence[1] | e }}" class="form-radio mr-2" onchange="checkSelection()">
                         <label for="sentence2" class="text-gray-700">{{ sentence[1] }}</label>
                     </div>
                     <div class="flex items-center mb-2">
-                        <input id="sentence3" type="radio" name="sentence" value="{{ sentence[2] | e }}" class="mr-2" onchange="checkSelection()">
+                        <input id="sentence3" type="radio" name="sentence" value="{{ sentence[2] | e }}" class="form-radio mr-2" onchange="checkSelection()">
                         <label for="sentence3" class="text-gray-700">{{ sentence[2] }}</label>
                     </div>
                 </div>
@@ -46,48 +48,48 @@
             </form>
         </div>
     </div>
-<script>
-    // 라디오 버튼 선택 확인 
-    function checkSelection() {
-        const submitButton = document.getElementById('submitButton');
-        const radios = document.forms['sentenceForm'].elements['sentence'];
-        let isSelected = false;
-        for(let i = 0; i < radios.length; i++) {
-        if(radios[i].checked) isSelected = true;
+    <script>
+        // 라디오 버튼 선택 확인 
+        function checkSelection() {
+            const submitButton = document.getElementById('submitButton');
+            const radios = document.forms['sentenceForm'].elements['sentence'];
+            let isSelected = false;
+            for(let i = 0; i < radios.length; i++) {
+                if(radios[i].checked) isSelected = true;
+            }
+            submitButton.disabled = !isSelected; 
         }
-        submitButton.disabled = !isSelected; 
-    }
-    // 함수 초기 상태 확인
-    document.addEventListener('DOMContentLoaded', checkSelection);
+        // 함수 초기 상태 확인
+        document.addEventListener('DOMContentLoaded', checkSelection);
 
-    function reGenerate() {
-        fetch('/reGenerate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                mood: '{{ mood | tojson}}'
+        function reGenerate() {
+            fetch('/reGenerate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    mood: '{{ mood | tojson}}'
+                })
             })
-        })
-        .then(response => response.json())
-        .then(data => {
-            updateSentences(data.sentence);
-        })
-        .catch((error) => {
-            console.error('Error:', error)
-        });
-    }
-
-    function updateSentences(sentence) {
-        for (let i = 0; i < sentence.length; i++) {
-            document.getElementById(`sentence${i+1}`).value = sentence[i];
-            document.querySelector(`label[for=sentence${i+1}]`).textContent = sentence[i];
+            .then(response => response.json())
+            .then(data => {
+                updateSentences(data.sentence);
+            })
+            .catch((error) => {
+                console.error('Error:', error)
+            });
         }
-    }
 
-    // 함수 초기 상태 확인
-    document.getElementById("reButton").addEventListener('click', reGenerate);
-</script>
+        function updateSentences(sentence) {
+            for (let i = 0; i < sentence.length; i++) {
+                document.getElementById(`sentence${i+1}`).value = sentence[i];
+                document.querySelector(`label[for=sentence${i+1}]`).textContent = sentence[i];
+            }
+        }
+
+        document.getElementById("reButton").addEventListener('click', reGenerate);
+    </script>
+    <script src="/static/js/sakura.js"></script>
 </body>
 </html>

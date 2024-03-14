@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 from dependencies import load_model_tokenizer, get_model_tokenizer, load_poem_model_tokenizer, get_poem_model_tokenizer
 from config import config
@@ -9,6 +10,10 @@ from pydantic import BaseModel
 import uvicorn
 
 import time
+
+import torch
+import random
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -20,7 +25,8 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(lifespan=lifespan)
-templates = Jinja2Templates(directory="templates") # HTML 파일이 위치한 디렉토리를 지정
+templates = Jinja2Templates(directory="template") # HTML 파일이 위치한 디렉토리를 지정
+app.mount("/static", StaticFiles(directory="template/static"), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 async def get_first_page(request: Request):
@@ -43,15 +49,20 @@ async def show_result(request: Request, mood: str):
     
     # input 데이터 전처리
     inputs = tokenizer(mood, return_tensors="pt")
-    # 예측
-    outputs = model.generate(
-        **inputs,
-        num_beams=3,
-        num_return_sequences=3,  # 반환할 시퀀스 수
-        do_sample=True
-    )
-    # 결과 디코딩
-    sentence = [tokenizer.decode(output, skip_special_tokens=True) for output in outputs]
+    # # 예측
+    # outputs = model.generate(
+    #     **inputs,
+    #     num_beams=6,
+    #     num_return_sequences=3,  # 반환할 시퀀스 수
+    #     do_sample=True
+    # )
+    # #결과 디코딩
+    # sentence = [tokenizer.decode(output, skip_special_tokens=True) for output in outputs]
+    
+    sentence =[]
+    for i in range(3):
+        output = model.generate(**inputs, do_sample=True)
+        sentence.append(tokenizer.decode(output[0], skip_special_tokens=True))
     
     # 코드 실행 후 시간 측정
     end_time = time.time()
@@ -60,7 +71,7 @@ async def show_result(request: Request, mood: str):
     execution_time = end_time - start_time
     
     logger.info("predict time : {}", execution_time)
-    logger.info("sentence : {}", sentence)
+    # logger.info("sentence : {}", sentence)
     
     return templates.TemplateResponse("sentence_page.html", {"request": request, "mood": mood, 'sentence': sentence})
 
@@ -111,6 +122,10 @@ class MoodRequest(BaseModel):
     
 @app.post("/reGenerate")
 async def reGenerate(request: MoodRequest):
+    
+    random_seed = random.randint(1, 10000)
+    torch.manual_seed(random_seed)
+    
     mood = request.mood
     
     # 모델&토크나이저 load
@@ -118,15 +133,12 @@ async def reGenerate(request: MoodRequest):
     
     # input 데이터 전처리
     inputs = tokenizer(mood, return_tensors="pt")
+    
     # 예측
-    outputs = model.generate(
-        **inputs,
-        num_beams=3,
-        num_return_sequences=3,  # 반환할 시퀀스 수
-        do_sample=True
-    )
-    # 결과 디코딩
-    sentence = [tokenizer.decode(output, skip_special_tokens=True) for output in outputs]
+    sentence =[]
+    for i in range(3):
+        output = model.generate(**inputs, do_sample=True)
+        sentence.append(tokenizer.decode(output[0], skip_special_tokens=True))
     
     return {"sentence": sentence}
 
