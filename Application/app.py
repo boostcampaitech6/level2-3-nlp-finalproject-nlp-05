@@ -15,16 +15,15 @@ from loguru import logger
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    
     # 모델&토큰나이저 로드
-    # load_model_tokenizer(config.model_path)
+    load_model_tokenizer(config.model_path)
     load_poem_model_tokenizer(config.poem_model_path)
     logger.info("Loading model")
     yield
 
 app = FastAPI(lifespan=lifespan)
-template = FileResponse('template/index.html')
-app.mount("/static", StaticFiles(directory="template/static"), name="static")
+template = FileResponse('templates/index.html')
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 async def home():
@@ -32,17 +31,15 @@ async def home():
 
 @app.post("/api/line")
 async def generate_line(request: LineRequest):
+    model, tokenizer = get_model_tokenizer()
     emotion = request.emotion
-    
-    lines = [emotion, emotion, emotion]
-    # model, tokenizer = get_model_tokenizer()
-    # # input 데이터 전처리
-    # inputs = tokenizer(emotion, return_tensors="pt")
-    # # 문장 생성
-    # for i in range(3):
-    #     output = model.generate(**inputs, do_sample=True)
-    #     decoded_output = tokenizer.decode(output[0], skip_special_tokens=True)
-    #     lines.append(decoded_output)
+    inputs = tokenizer(emotion, return_tensors="pt")
+    lines = []
+
+    for i in range(3):
+        output = model.generate(**inputs, do_sample=True)
+        decoded_output = tokenizer.decode(output[0], skip_special_tokens=True)
+        lines.append(decoded_output)
 
     return { "lines": lines}
     
@@ -68,7 +65,7 @@ async def generate_poem(request: PoemRequest):
     output = model.generate(
         input_ids=input_ids,
         temperature=0.2, # 생성 다양성 조절
-        max_new_tokens=64, # 생성되는 문장의 최대 길이
+        max_new_tokens=128, # 생성되는 문장의 최대 길이
         top_k=25, # 높은 확률을 가진 top-k 토큰만 고려
         top_p=0.95, # 누적 확률이 p를 초과하는 토큰은 제외
         repetition_penalty=1.2, # 반복을 줄이는 패널티
