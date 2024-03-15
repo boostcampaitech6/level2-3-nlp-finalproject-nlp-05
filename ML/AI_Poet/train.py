@@ -45,21 +45,22 @@ if __name__ == "__main__":
     file_path = "dataset/poem_dataset.csv"
 
     dataset = pd.read_csv(file_path)
+    dataset = dataset[dataset["num_lines"] > 5]
     train_dataset = list(dataset["poem"])
     train_data = Poem_Dataet(train_dataset, tokenizer)
 
     # set TrainingArguments
     training_args=TrainingArguments(
-    output_dir="output/version_2",
+    output_dir="output/version_4",
     overwrite_output_dir=True,
-    logging_steps=500,
-    save_steps=500,
+    logging_steps=2000,
+    save_steps=2000,
     save_total_limit=1,
     learning_rate= 1e-05,
     per_device_train_batch_size=2,
     num_train_epochs=10,
     lr_scheduler_type="linear",
-    warmup_steps=500,
+    warmup_steps=2000,
     seed=42
     )
 
