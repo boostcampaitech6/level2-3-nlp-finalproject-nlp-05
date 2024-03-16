@@ -8,7 +8,7 @@ class LineResponse(BaseModel):
     lines: list
 
 class PoemRequest(BaseModel):
-    line: str
+    line: Optional[str] = Field(default='Line is not selected')
 
 class PoemResponse(BaseModel):
     poem: str
