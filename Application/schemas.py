@@ -2,7 +2,10 @@ from pydantic import BaseModel, Field
 from typing import Optional
 
 class LineRequest(BaseModel):
-    emotion: Optional[str] = None
+    emotion: str
+
+class LineResponse(BaseModel):
+    
 
 class PoemRequest(BaseModel):
-    line: Optional[str] = None
+    line: str
