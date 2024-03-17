@@ -6,12 +6,11 @@ from typing import Optional
 import uvicorn
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 from contextlib import asynccontextmanager
-from schemas import LineRequest, PoemRequest
+from schemas import LineRequest, LineResponse, PoemRequest, PoemResponse
 from dependency import load_model_tokenizer, get_model_tokenizer, load_poem_model_tokenizer, get_poem_model_tokenizer
 from config import config
 from loguru import logger
-
-# from openai import OpenAI
+from openai import OpenAI
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -41,7 +40,7 @@ async def generate_line(request: LineRequest):
         decoded_output = tokenizer.decode(output[0], skip_special_tokens=True)
         lines.append(decoded_output)
 
-    return { "lines": lines}
+    return LineResponse(lines=lines)
     
 @app.post("/api/poem")
 async def generate_poem(request: PoemRequest):
@@ -51,14 +50,14 @@ async def generate_poem(request: PoemRequest):
     
     # 이미지 생성
     # OpenAI API_KEY 설정
-    # API_KEY = None
-    # client = OpenAI(api_key=API_KEY)
-    # response = client.images.generate(model='dall-e-3',
-    #                                  prompt=line,
-    #                                  size='1024x1024',
-    #                                  quality='standard',
-    #                                  n=1)
-    # generated_image_url = response.data[0].url
+    API_KEY = None
+    client = OpenAI(api_key=API_KEY)
+    response = client.images.generate(model='dall-e-3',
+                                     prompt=line,
+                                     size='1024x1024',
+                                     quality='standard',
+                                     n=1)
+    generated_image_url = response.data[0].url
     
     # 시 생성 
     input_ids = tokenizer.encode(line, add_special_tokens=True, return_tensors='pt')
@@ -74,7 +73,8 @@ async def generate_poem(request: PoemRequest):
     )
     poem = tokenizer.decode(output[0].tolist(), skip_special_tokens=True)
 
-    return { "poem": poem}
+    return PoemResponse(poem=poem,
+                        image_url=generated_image_url)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
