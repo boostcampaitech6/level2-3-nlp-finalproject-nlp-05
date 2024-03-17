@@ -14,6 +14,7 @@ class Poem_Dataet(Dataset):
 
         # tokenizing 수행 후, input_ids 저장
         for data in self.dataset:
+            data = "<s>" + data + "</s>"
             tokenized_data = self.tokenizer(data, add_special_tokens=True, max_length=1024, padding="max_length", truncation=True, return_tensors='pt')
             self.tokenized_dataset.append(tokenized_data)
 
@@ -38,7 +39,7 @@ if __name__ == "__main__":
 
     # model, tokenizer, data_collator load
     model = GPT2LMHeadModel.from_pretrained('skt/kogpt2-base-v2').to(device)
-    tokenizer = PreTrainedTokenizerFast.from_pretrained("skt/kogpt2-base-v2", bos_token='</s>', eos_token='</s>', unk_token='<unk>', pad_token='<pad>', mask_token='<mask>')
+    tokenizer = PreTrainedTokenizerFast.from_pretrained("skt/kogpt2-base-v2", bos_token='<s>', eos_token='</s>', unk_token='<unk>', pad_token='<pad>', mask_token='<mask>')
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
     # train dataset load & preprocessing
