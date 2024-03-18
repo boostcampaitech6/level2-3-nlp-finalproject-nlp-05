@@ -40,6 +40,10 @@ if __name__ == "__main__":
     # model, tokenizer, data_collator load
     model = GPT2LMHeadModel.from_pretrained('skt/kogpt2-base-v2').to(device)
     tokenizer = PreTrainedTokenizerFast.from_pretrained("skt/kogpt2-base-v2", bos_token='<s>', eos_token='</s>', unk_token='<unk>', pad_token='<pad>', mask_token='<mask>')
+    
+    tokenizer.add_special_tokens({'additional_special_tokens': ["<yun>"]})
+    model.resize_token_embeddings(len(tokenizer))
+
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
     # train dataset load & preprocessing
@@ -58,8 +62,8 @@ if __name__ == "__main__":
     save_steps=2000,
     save_total_limit=1,
     learning_rate= 1e-05,
-    per_device_train_batch_size=2,
-    num_train_epochs=10,
+    per_device_train_batch_size=8,
+    num_train_epochs=20,
     lr_scheduler_type="linear",
     warmup_steps=2000,
     seed=42
