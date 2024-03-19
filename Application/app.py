@@ -113,7 +113,7 @@ async def upload(request: UploadRequest):
     # instagram 게시할 것들
     post_payload = {
         'image_url': image_url, # 이미지
-        'caption': f'[{id}님의 오늘의 시]\n'+poem, # 해시태그 및 기타 입력
+        'caption': f'[{id}님의 "오늘의 시"]\n\n'+poem, # 해시태그 및 기타 입력
         'user_tags': "[ { username:'"+id+"', x: 0, y: 0 } ]", # 태그될 유저 계졍(사용자)
         'access_token': access_token
     }
