@@ -27,6 +27,26 @@ h1, p {
     accent-color: #A2566F; 
 }
 
+#emotionButton {
+    background-color: #ce7995; 
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+#emotionButton:hover {
+    background-color: #b94061; 
+}
+
+#lineButton {
+    background-color: #A2566F; 
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+#lineButton:hover {
+    background-color: #D17890; 
+}
+
 #submitButton {
     background-color: #A2566F; 
     border: none;
