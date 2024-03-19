@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -12,9 +12,17 @@ from config import config
 from loguru import logger
 from openai import OpenAI
 from omegaconf import OmegaConf
+import requests
+import json
 
 
 tokens = OmegaConf.load(f'../tokens.yaml')
+
+
+# 시와 이미지 url을 전역변수로 관리하기 위함
+poem = None
+image_url = None
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -24,13 +32,16 @@ async def lifespan(app: FastAPI):
     logger.info("Loading model")
     yield
 
+
 app = FastAPI(lifespan=lifespan)
 template = FileResponse('templates/index.html')
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+
 @app.get("/", response_class=HTMLResponse)
 async def home():
     return template
+
 
 @app.post("/api/line")
 async def generate_line(request: LineRequest):
@@ -46,10 +57,14 @@ async def generate_line(request: LineRequest):
 
     return LineResponse(lines=lines)
     
+
 @app.post("/api/poem")
 async def generate_poem(request: PoemRequest):
     model, tokenizer = get_poem_model_tokenizer()
     
+    global poem
+    global image_url
+
     line = request.line + '\n'
     
     # 이미지 생성
@@ -57,11 +72,11 @@ async def generate_poem(request: PoemRequest):
     API_KEY = tokens.openai.api_key
     client = OpenAI(api_key=API_KEY)
     response = client.images.generate(model='dall-e-3',
-                                     prompt=line,
-                                     size='1024x1024',
-                                     quality='standard',
-                                     n=1)
-    generated_image_url = response.data[0].url
+                                      prompt=line,
+                                      size='1024x1024',
+                                      quality='standard',
+                                      n=1)
+    image_url = response.data[0].url
     
     # 시 생성 
     input_ids = tokenizer.encode(line, add_special_tokens=True, return_tensors='pt')
@@ -78,13 +93,58 @@ async def generate_poem(request: PoemRequest):
     poem = tokenizer.decode(output[0].tolist(), skip_special_tokens=True)
 
     return PoemResponse(poem=poem,
-                        image_url=generated_image_url)
+                        image_url=image_url)
+
 
 @app.post("/api/upload")
 async def upload(request: UploadRequest):
+    global poem
+    global image_url
+
     id = request.instagramID
 
-    return {"id": id}
+    IG_user_id = tokens.facebook.IG_user_id
+
+    # The access_token is valid until 2024.05.17. 
+    access_token = tokens.facebook.access_token
+
+    post_url = 'https://graph.facebook.com/v19.0/{}/media'.format( IG_user_id )
+
+    # instagram 게시할 것들
+    post_payload = {
+        'image_url': image_url, # 이미지
+        'caption': f'[{id}님의 "오늘의 시"]\n\n'+poem, # 해시태그 및 기타 입력
+        'user_tags': "[ { username:'"+id+"', x: 0, y: 0 } ]", # 태그될 유저 계졍(사용자)
+        'access_token': access_token
+    }
+
+    post_request = requests.post(
+        post_url,
+        data=post_payload
+    )
+
+    result = json.loads(post_request.text)
+    
+    try:
+        creation_id = result['id']
+    except KeyError:
+        # 로깅을 추가하여 문제를 진단할 수 있도록 함
+        logger.error(f"KeyError: 'id' not found in the response. Response was: {result}. Image URL: {image_url}")
+        # 여기서 오류를 처리하거나 적절한 HTTP 응답을 반환할 수 있습니다.
+        raise HTTPException(status_code=500, detail="Internal Server Error: KeyError for 'id'.")
+
+    publish_url = 'https://graph.facebook.com/v19.0/{}/media_publish'.format( IG_user_id )
+
+    publish_payload = {
+        'creation_id': creation_id, # 생성된 컨테이너 ID
+        'access_token': access_token
+    }
+
+    publish_request = requests.post(
+        publish_url, 
+        data=publish_payload
+    )
+    
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
