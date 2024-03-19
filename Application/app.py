@@ -37,8 +37,8 @@ async def generate_line(request: LineRequest):
     lines = []
 
     for i in range(3):
-        output = model.generate(**inputs, top_k=4, do_sample=True)
-        decoded_output = tokenizer.decode(output[0], skip_special_tokens=True)
+        output = model.generate(**inputs, do_sample=True)
+        decoded_output = tokenizer.decode(output[0], temperature=0.2, top_k=5, skip_special_tokens=True)
         lines.append(decoded_output)
 
     return { "lines": lines}

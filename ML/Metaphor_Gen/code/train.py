@@ -120,7 +120,7 @@ class DataTrainingArguments:
         metadata={"help": "The name of the column in the datasets containing the summaries (for summarization)."},
     )
     train_file: Optional[str] = field(
-        default='../data/train_final.json', metadata={"help": "The input training data file (a jsonlines or csv file)."}
+        default='../data/train_final_2.json', metadata={"help": "The input training data file (a jsonlines or csv file)."}
     )
     validation_file: Optional[str] = field(
         default=None,
