@@ -60,7 +60,7 @@ if __name__ == "__main__":
     lora_config = LoraConfig(
         r=8,
         lora_alpha=16,
-        target_modules=,
+        target_modules=['q_proj', 'fc_out', 'v_proj', 'out_proj', 'lm_head', 'fc_in', 'k_proj'],
         lora_dropout=0.05,
         bias="none",
         task_type="CASUAL_LM"
