@@ -13,3 +13,6 @@ class PoemRequest(BaseModel):
 class PoemResponse(BaseModel):
     poem: str
     image_url: Optional[str] = Field(default='OPEN_AI_API_KEY is not selected', description='Path to the generated image')
+
+class UploadRequest(BaseModel):
+    id: Optional[str] = Field(default=None, description="User's instagram ID")
