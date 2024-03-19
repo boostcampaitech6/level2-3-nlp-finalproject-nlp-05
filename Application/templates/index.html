@@ -166,6 +166,25 @@
         $('input[name="emotion"]').prop('checked', false);
         $('input[name="line"]').prop('checked', false);
     }
+
+    function uploadPoem() {
+        var instagramID = prompt("인스타 아이디를 입력해 주세요.", "본인의 인스타 아이디");
+        
+        if(instagramID) {
+            $.ajax({
+                type: "POST",
+                url: "/api/upload",
+                contentType: "application/json", // 요청의 Content-Type을 application/json으로 명시
+                data: JSON.stringify({ 'instagramID': instagramID }), // 객체를 JSON 문자열로 변환
+                success: function (response) {
+                    alert("업로드 완료!");
+                }
+                })
+        } else {
+            alert("인스타 아이디를 입력하지 않으셨습니다.");
+        }
+
+    }
     </script>
 </head>
 <body class="bg-gray-100">
