@@ -6,7 +6,7 @@ from typing import Optional
 import uvicorn
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 from contextlib import asynccontextmanager
-from schemas import LineRequest, LineResponse, PoemRequest, PoemResponse, UploadRequest, 
+from schemas import LineRequest, LineResponse, PoemRequest, PoemResponse, UploadRequest
 from dependency import load_model_tokenizer, get_model_tokenizer, load_poem_model_tokenizer, get_poem_model_tokenizer
 from config import config
 from loguru import logger
