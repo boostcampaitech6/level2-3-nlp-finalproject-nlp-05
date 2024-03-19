@@ -6,3 +6,6 @@ class LineRequest(BaseModel):
 
 class PoemRequest(BaseModel):
     line: Optional[str] = None
+
+class UploadRequest(BaseModel):
+    instagramID: Optional[str] = None

@@ -6,7 +6,7 @@ from typing import Optional
 import uvicorn
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 from contextlib import asynccontextmanager
-from schemas import LineRequest, PoemRequest
+from schemas import LineRequest, PoemRequest, UploadRequest
 from dependency import load_model_tokenizer, get_model_tokenizer, load_poem_model_tokenizer, get_poem_model_tokenizer
 from config import config
 from loguru import logger
@@ -37,7 +37,7 @@ async def generate_line(request: LineRequest):
     lines = []
 
     for i in range(3):
-        output = model.generate(**inputs, do_sample=True)
+        output = model.generate(**inputs, top_k=4, do_sample=True)
         decoded_output = tokenizer.decode(output[0], skip_special_tokens=True)
         lines.append(decoded_output)
 
@@ -75,6 +75,12 @@ async def generate_poem(request: PoemRequest):
     poem = tokenizer.decode(output[0].tolist(), skip_special_tokens=True)
 
     return { "poem": poem}
+
+@app.post("/api/upload")
+async def upload(request: UploadRequest):
+    id = request.instagramID
+
+    return {"id": id}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
