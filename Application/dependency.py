@@ -11,7 +11,7 @@ def load_model_tokenizer(model_path: str):
     global model
     global tokenizer
     
-    model = GPT2LMHeadModel.from_pretrained(model_path)
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_path)
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     
 def get_model_tokenizer():
