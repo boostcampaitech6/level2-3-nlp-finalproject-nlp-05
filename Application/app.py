@@ -69,31 +69,35 @@ async def generate_poem(request: PoemRequest):
     
     # 이미지 생성
     # OpenAI API_KEY 설정
-    API_KEY = tokens.openai.api_key
-    client = OpenAI(api_key=API_KEY)
-    response = client.images.generate(model='dall-e-3',
-                                      prompt=line,
-                                      size='1024x1024',
-                                      quality='standard',
-                                      n=1)
-    image_url = response.data[0].url
+    # API_KEY = tokens.openai.api_key
+    # client = OpenAI(api_key=API_KEY)
+    # response = client.images.generate(model='dall-e-3',
+    #                                   prompt=line,
+    #                                   size='1024x1024',
+    #                                   quality='standard',
+    #                                   n=1)
+    # image_url = response.data[0].url
     
     # 시 생성 
     input_ids = tokenizer.encode(line, add_special_tokens=True, return_tensors='pt')
     output = model.generate(
         input_ids=input_ids,
         temperature=0.2, # 생성 다양성 조절
-        max_new_tokens=128, # 생성되는 문장의 최대 길이
+        min_length=64,
+        max_length=256, # 생성되는 문장의 최대 길이
         top_k=25, # 높은 확률을 가진 top-k 토큰만 고려
         top_p=0.95, # 누적 확률이 p를 초과하는 토큰은 제외
         repetition_penalty=1.2, # 반복을 줄이는 패널티
         do_sample=True, # 샘플링 기반 생성 활성화
         num_return_sequences=1, # 생성할 시퀀스의 수
+        early_stopping=True, # EOS token을 만나면 조기 종료
+        eos_token_id=tokenizer.eos_token_id
     )
-    poem = tokenizer.decode(output[0].tolist(), skip_special_tokens=True)
+    poem = tokenizer.decode(output[0].tolist(), skip_special_tokens=False)
+    poem = poem.replace("<yun> ", "\n").replace("<s> ", "").replace("</s>", "")
 
     return PoemResponse(poem=poem,
-                        image_url=image_url)
+                        image_url="https://via.placeholder.com/150")
 
 
 @app.post("/api/upload")
