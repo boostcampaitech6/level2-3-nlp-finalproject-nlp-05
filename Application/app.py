@@ -67,16 +67,7 @@ async def generate_poem(request: PoemRequest):
 
     line = request.line + '\n'
     
-    # 이미지 생성
-    # OpenAI API_KEY 설정
-    API_KEY = tokens.openai.api_key
-    client = OpenAI(api_key=API_KEY)
-    response = client.images.generate(model='dall-e-3',
-                                      prompt=line,
-                                      size='1024x1024',
-                                      quality='standard',
-                                      n=1)
-    image_url = response.data[0].url
+   
     
     # 시 생성 
     input_ids = tokenizer.encode(line, add_special_tokens=True, return_tensors='pt')
@@ -91,6 +82,17 @@ async def generate_poem(request: PoemRequest):
         num_return_sequences=1, # 생성할 시퀀스의 수
     )
     poem = tokenizer.decode(output[0].tolist(), skip_special_tokens=True)
+
+     # 이미지 생성
+    # OpenAI API_KEY 설정
+    API_KEY = tokens.openai.api_key
+    client = OpenAI(api_key=API_KEY)
+    response = client.images.generate(model='dall-e-3',
+                                      prompt=poem,
+                                      size='1024x1024',
+                                      quality='standard',
+                                      n=1)
+    image_url = response.data[0].url
 
     return PoemResponse(poem=poem,
                         image_url=image_url)
