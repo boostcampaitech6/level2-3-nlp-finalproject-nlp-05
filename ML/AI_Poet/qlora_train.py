@@ -13,7 +13,7 @@ class Poem_Dataet(Dataset):
         self.tokenizer = tokenizer
         self.tokenized_dataset = []
 
-        # tokenizing 수행 후, input_ids 저장
+        # tokenizing
         for data in self.dataset:
             data = "[BOS]" + data + "[EOS]"
             tokenized_data = self.tokenizer(data, add_special_tokens=True, max_length=512, padding="max_length", truncation=True, return_tensors='pt')
@@ -29,7 +29,7 @@ class Poem_Dataet(Dataset):
 
 if __name__ == "__main__":
     # model, tokenizer load
-    tokenizer = AutoTokenizer.from_pretrained('kakaobrain/kogpt', revision='KoGPT6B-ryan1.5b',  # or float32 version: revision=KoGPT6B-ryan1.5b
+    tokenizer = AutoTokenizer.from_pretrained('kakaobrain/kogpt', revision='KoGPT6B-ryan1.5b',
     bos_token='[BOS]', eos_token='[EOS]', unk_token='[UNK]', pad_token='[PAD]', mask_token='[MASK]')
 
     bnb_config = BitsAndBytesConfig(
@@ -39,7 +39,7 @@ if __name__ == "__main__":
         bnb_4bit_compute_dtype=torch.bfloat16
     )
 
-    model = AutoModelForCausalLM.from_pretrained('kakaobrain/kogpt', revision='KoGPT6B-ryan1.5b',  # or float32 version: revision=KoGPT6B-ryan1.5b
+    model = AutoModelForCausalLM.from_pretrained('kakaobrain/kogpt', revision='KoGPT6B-ryan1.5b',
     pad_token_id=tokenizer.eos_token_id, quantization_config=bnb_config, device_map={"":0})
     
     tokenizer.add_special_tokens({'additional_special_tokens': ["[YUN]"]})
