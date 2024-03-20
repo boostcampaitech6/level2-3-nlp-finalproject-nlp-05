@@ -24,9 +24,6 @@ class Poem_Dataet(Dataset):
 
     def __getitem__(self, index):
         item = self.tokenized_dataset[index]
-        # input_ids = item["input_ids"].squeeze(0)
-        # label_ids = item["input_ids"].squeeze(0)
-        # attention_mask = item["attention_mask"].squeeze(0)
         item["labels"] = item["input_ids"]
         return item
 
