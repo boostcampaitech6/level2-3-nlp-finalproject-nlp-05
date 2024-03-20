@@ -12,3 +12,4 @@ ML/Metaphor_Gen/code/.lock
 .local
 .ipython
 ML/AI_Poet/output/*
+Application/__pycache__
