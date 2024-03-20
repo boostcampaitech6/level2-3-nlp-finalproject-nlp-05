@@ -4,7 +4,7 @@ import pandas as pd
 import torch
 
 from transformers import TrainingArguments, Trainer
-from peft import LoraConfig, get_peft_model, get_peft_model_state_dict, prepare_model_for_kbit_training, set_peft_model_state_dict
+from peft import LoraConfig, get_peft_model, get_peft_model_state_dict, prepare_model_for_kbit_training
 
 
 class Poem_Dataet(Dataset):
@@ -24,19 +24,15 @@ class Poem_Dataet(Dataset):
 
     def __getitem__(self, index):
         item = self.tokenized_dataset[index]
-        input_ids = item["input_ids"].squeeze(0)
-        label_ids = item["input_ids"].squeeze(0)
-        attention_mask = item["attention_mask"].squeeze(0)
-        return {
-            "input_ids": input_ids,
-            "attention_mask": attention_mask,
-            "label_ids": label_ids
-        }
-
+        # input_ids = item["input_ids"].squeeze(0)
+        # label_ids = item["input_ids"].squeeze(0)
+        # attention_mask = item["attention_mask"].squeeze(0)
+        item["labels"] = item["input_ids"]
+        return item
 
 if __name__ == "__main__":
     # model, tokenizer load
-    tokenizer = AutoTokenizer.from_pretrained('kakaobrain/kogpt', revision='KoGPT6B-ryan1.5b-float16',  # or float32 version: revision=KoGPT6B-ryan1.5b
+    tokenizer = AutoTokenizer.from_pretrained('kakaobrain/kogpt', revision='KoGPT6B-ryan1.5b',  # or float32 version: revision=KoGPT6B-ryan1.5b
     bos_token='[BOS]', eos_token='[EOS]', unk_token='[UNK]', pad_token='[PAD]', mask_token='[MASK]')
 
     bnb_config = BitsAndBytesConfig(
@@ -46,7 +42,7 @@ if __name__ == "__main__":
         bnb_4bit_compute_dtype=torch.bfloat16
     )
 
-    model = AutoModelForCausalLM.from_pretrained('kakaobrain/kogpt', revision='KoGPT6B-ryan1.5b-float16',  # or float32 version: revision=KoGPT6B-ryan1.5b
+    model = AutoModelForCausalLM.from_pretrained('kakaobrain/kogpt', revision='KoGPT6B-ryan1.5b',  # or float32 version: revision=KoGPT6B-ryan1.5b
     pad_token_id=tokenizer.eos_token_id, quantization_config=bnb_config, device_map={"":0})
     
     tokenizer.add_special_tokens({'additional_special_tokens': ["[YUN]"]})
@@ -74,6 +70,10 @@ if __name__ == "__main__":
     dataset = pd.read_csv(file_path)
     dataset = dataset[dataset["num_lines"] > 5]
     train_dataset = list(dataset["poem"])
+
+    for i in range(len(train_dataset)):
+        train_dataset[i] = train_dataset[i].replace("<yun>", "[YUN]")
+
     train_data = Poem_Dataet(train_dataset, tokenizer)
 
     model.print_trainable_parameters()
@@ -86,8 +86,8 @@ if __name__ == "__main__":
         save_steps=2000,
         save_total_limit=1,
         learning_rate= 1e-05,
-        per_device_train_batch_size=8,
-        num_train_epochs=20,
+        per_device_train_batch_size=4,
+        num_train_epochs=10,
         lr_scheduler_type="linear",
         warmup_steps=2000,
         seed=42,
