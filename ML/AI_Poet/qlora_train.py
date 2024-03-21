@@ -29,7 +29,7 @@ class Poem_Dataet(Dataset):
 
 if __name__ == "__main__":
     # model, tokenizer load
-    tokenizer = AutoTokenizer.from_pretrained('kakaobrain/kogpt', revision='KoGPT6B-ryan1.5b',
+    tokenizer = AutoTokenizer.from_pretrained('kakaobrain/kogpt', revision='KoGPT6B-ryan1.5b-float16',
     bos_token='[BOS]', eos_token='[EOS]', unk_token='[UNK]', pad_token='[PAD]', mask_token='[MASK]')
 
     bnb_config = BitsAndBytesConfig(
@@ -39,7 +39,7 @@ if __name__ == "__main__":
         bnb_4bit_compute_dtype=torch.bfloat16
     )
 
-    model = AutoModelForCausalLM.from_pretrained('kakaobrain/kogpt', revision='KoGPT6B-ryan1.5b',
+    model = AutoModelForCausalLM.from_pretrained('kakaobrain/kogpt', revision='KoGPT6B-ryan1.5b-float16',
     pad_token_id=tokenizer.eos_token_id, quantization_config=bnb_config, device_map={"":0})
     
     tokenizer.add_special_tokens({'additional_special_tokens': ["[YUN]"]})
@@ -79,14 +79,14 @@ if __name__ == "__main__":
     training_args=TrainingArguments(
         output_dir="output/version_qlora",
         overwrite_output_dir=True,
-        logging_steps=2000,
-        save_steps=2000,
+        logging_steps=200,
+        save_steps=200,
         save_total_limit=1,
-        learning_rate= 1e-05,
+        learning_rate= 3e-04,
         per_device_train_batch_size=4,
-        num_train_epochs=10,
+        num_train_epochs=1,
         lr_scheduler_type="linear",
-        warmup_steps=2000,
+        warmup_steps=200,
         seed=42,
         fp16=True
     )

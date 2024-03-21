@@ -28,6 +28,9 @@ def load_poem_model_tokenizer(poem_model_path: str):
     
     poem_model = GPT2LMHeadModel.from_pretrained(poem_model_path)
     poem_tokenizer = PreTrainedTokenizerFast.from_pretrained(poem_model_path)
+
+    poem_tokenizer.add_special_tokens({'additional_special_tokens': ["<yun>"]})
+    poem_model.resize_token_embeddings(len(poem_tokenizer))
     
 def get_poem_model_tokenizer():
     
