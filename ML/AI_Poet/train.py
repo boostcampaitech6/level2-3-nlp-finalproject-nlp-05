@@ -1,4 +1,4 @@
-from transformers import AutoTokenizer, AutoModelForCausalLM, DataCollatorForLanguageModeling
+from transformers import AutoTokenizer, AutoModelForCausalLM, DataCollatorWithPadding
 from torch.utils.data import Dataset
 import pandas as pd
 import torch
@@ -15,7 +15,7 @@ class Poem_Dataet(Dataset):
 
         # tokenize dataset
         for data in self.dataset:
-            tokenized_data = self.tokenizer(data, add_special_tokens=True, max_length=512, padding="max_length", truncation=True, return_tensors=None, return_token_type_ids=False)
+            tokenized_data = self.tokenizer(data, add_special_tokens=True, max_length=512, padding=False, truncation=True, return_tensors=None, return_token_type_ids=False)
             self.tokenized_dataset.append(tokenized_data)
 
     def __len__(self):
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     tokenizer.add_special_tokens({'additional_special_tokens': ["[YUN]"]})
     model.resize_token_embeddings(len(tokenizer))
 
-    data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False, return_tensors="pt")
+    data_collator = DataCollatorWithPadding(tokenizer=tokenizer, return_tensors="pt", padding=True)
 
     # freeze layers
     for parameter in model.parameters():
@@ -80,7 +80,7 @@ if __name__ == "__main__":
         learning_rate= 2e-05,
         per_device_train_batch_size=1,
         gradient_accumulation_steps=8,
-        num_train_epochs=20,
+        num_train_epochs=15,
         lr_scheduler_type="linear",
         warmup_ratio=0.1,
         seed=42,
