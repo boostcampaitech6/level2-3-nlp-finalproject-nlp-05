@@ -1,7 +1,8 @@
-from transformers import AutoTokenizer, AutoModelForCausalLM, DataCollatorWithPadding, BitsAndBytesConfig
+from transformers import AutoTokenizer, AutoModelForCausalLM, DataCollatorForLanguageModeling, BitsAndBytesConfig
 from torch.utils.data import Dataset
 import pandas as pd
 import torch
+import sys
 
 from transformers import TrainingArguments, Trainer
 from peft import LoraConfig, get_peft_model, get_peft_model_state_dict, prepare_model_for_kbit_training
@@ -15,8 +16,8 @@ class Poem_Dataet(Dataset):
 
         # tokenizing
         for data in self.dataset:
-            data = "[BOS]" + data + "[EOS]"
-            tokenized_data = self.tokenizer(data, add_special_tokens=True, max_length=512, padding="max_length", truncation=True, return_tensors='pt')
+            # data = "[BOS]" + data + "[EOS]"
+            tokenized_data = self.tokenizer(data, add_special_tokens=True, max_length=512, padding="max_length", truncation=True, return_tensors=None, return_token_type_ids=False)
             self.tokenized_dataset.append(tokenized_data)
 
     def __len__(self):
@@ -29,8 +30,8 @@ class Poem_Dataet(Dataset):
 
 if __name__ == "__main__":
     # model, tokenizer load
-    tokenizer = AutoTokenizer.from_pretrained('kakaobrain/kogpt', revision='KoGPT6B-ryan1.5b-float16',
-    bos_token='[BOS]', eos_token='[EOS]', unk_token='[UNK]', pad_token='[PAD]', mask_token='[MASK]')
+    tokenizer = AutoTokenizer.from_pretrained('EleutherAI/polyglot-ko-1.3b', return_special_tokens_mask=True)
+    tokenizer.pad_token = tokenizer.eos_token
 
     bnb_config = BitsAndBytesConfig(
         load_in_4bit=True,
@@ -39,13 +40,13 @@ if __name__ == "__main__":
         bnb_4bit_compute_dtype=torch.bfloat16
     )
 
-    model = AutoModelForCausalLM.from_pretrained('kakaobrain/kogpt', revision='KoGPT6B-ryan1.5b-float16',
-    pad_token_id=tokenizer.eos_token_id, quantization_config=bnb_config, device_map={"":0})
+    model = AutoModelForCausalLM.from_pretrained('EleutherAI/polyglot-ko-1.3b', pad_token_id=tokenizer.eos_token_id, 
+                                                 quantization_config=bnb_config, device_map={"":0})
     
     tokenizer.add_special_tokens({'additional_special_tokens': ["[YUN]"]})
     model.resize_token_embeddings(len(tokenizer))
 
-    data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
+    data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False, return_tensors="pt")
 
     model.gradient_checkpointing_enable()
     model = prepare_model_for_kbit_training(model)
@@ -53,7 +54,7 @@ if __name__ == "__main__":
     lora_config = LoraConfig(
         r=8,
         lora_alpha=16,
-        target_modules=['q_proj', 'fc_out', 'v_proj', 'out_proj', 'lm_head', 'fc_in', 'k_proj'],
+        target_modules="all-linear",
         lora_dropout=0.05,
         bias="none",
         task_type="CASUAL_LM"
@@ -83,12 +84,15 @@ if __name__ == "__main__":
         save_steps=200,
         save_total_limit=1,
         learning_rate= 3e-04,
-        per_device_train_batch_size=4,
+        per_device_train_batch_size=32,
         num_train_epochs=1,
         lr_scheduler_type="linear",
-        warmup_steps=200,
+        warmup_ratio=0.1,
         seed=42,
-        fp16=True
+        fp16=True,
+        ddp_find_unused_parameters=None,
+        group_by_length=True,
+        optim="adamw_torch"
     )
 
     # set Trainer
@@ -105,7 +109,11 @@ if __name__ == "__main__":
         model, type(model)
     )
 
-    # run training
-    trainer.train()
+    # model train & save
+    if torch.__version__ >= "2" and sys.platform != "win32":
+        model = torch.compile(model)
+
+    with torch.autocast("cuda"):
+        trainer.train()
 
     model.save_pretrained("output/version_qlora")
