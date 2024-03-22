@@ -28,6 +28,26 @@
             display: none;
         }
 
+        #loading {
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            position: fixed;
+            display: block;
+            opacity: 0.8;
+            background: white;
+            z-index: 99;
+            text-align: center;
+        }
+        
+        #loading > img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 100;
+        }
+
     </style>
     <script>
     $(window).load(function () {
@@ -167,6 +187,8 @@
         poemContentElement.textContent = poem;
 
         document.querySelector("#thirdPage img").src = image;
+        document.querySelector("#thirdPage img").style.width = "400px";
+        document.querySelector("#thirdPage img").style.height = "400px";
     }
 
     function showBackPage() {
@@ -188,6 +210,9 @@
         var instagramID = prompt("인스타 아이디를 입력해 주세요.", "본인의 인스타 아이디");
         
         if(instagramID) {
+            // 로딩 화면
+            $('#loading').show();
+
             $.ajax({
                 type: "POST",
                 url: "/api/upload",
@@ -195,10 +220,18 @@
                 data: JSON.stringify({ 'instagramID': instagramID }), // 객체를 JSON 문자열로 변환
                 success: function (response) {
                     alert("업로드 완료!");
+                },
+                complete: function() {
+                    // 로딩 화면 숨김
+                    $('#loading').hide();
                 }
                 })
         } else {
-            alert("인스타 아이디를 입력하지 않으셨습니다.");
+            $('#loading').show();
+            setTimeout(function() {
+                $('#loading').hide(); 
+                alert("인스타 아이디를 입력하지 않으셨습니다."); 
+            }, 3000); 
         }
 
     }
@@ -303,6 +336,12 @@
                 </div>
             </div>
         </div>
-    </div>  
+    </div>
+
+    <!-- 로딩 화면 -->
+    <div id="loading" style="display:none;">
+        <img src="../static/images/Pizza_spinning.gif" alt="loading">
+    </div>
+
 </body>
 </html>
