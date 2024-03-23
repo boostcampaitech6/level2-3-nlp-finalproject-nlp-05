@@ -84,8 +84,8 @@ async def generate_poem(request: PoemRequest):
     input_ids = tokenizer.encode(line, add_special_tokens=True, return_tensors='pt')
     output = model.generate(
         input_ids=input_ids,
-        temperature=0.2, # 생성 다양성 조절
-        min_length=64,
+        temperature=0.5, # 생성 다양성 조절
+        min_length=64,   # 생성되는 문장의 최소 길이
         max_length=256, # 생성되는 문장의 최대 길이
         top_k=25, # 높은 확률을 가진 top-k 토큰만 고려
         top_p=0.95, # 누적 확률이 p를 초과하는 토큰은 제외
@@ -97,6 +97,17 @@ async def generate_poem(request: PoemRequest):
     )
     poem = tokenizer.decode(output[0].tolist(), skip_special_tokens=False)
     poem = poem.replace("<yun> ", "\n").replace("<s> ", "").replace("</s>", "")
+
+     # 이미지 생성
+    # OpenAI API_KEY 설정
+    API_KEY = tokens.openai.api_key
+    client = OpenAI(api_key=API_KEY)
+    response = client.images.generate(model='dall-e-3',
+                                      prompt=poem,
+                                      size='1024x1024',
+                                      quality='standard',
+                                      n=1)
+    image_url = response.data[0].url
 
     return PoemResponse(poem=poem,
                         image_url=image_url)
