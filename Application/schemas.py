@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Optional
 
 class LineRequest(BaseModel):
+    category: Optional[str]
     emotion: Optional[str] = Field(default='Emotion is not selected')
 
 class LineResponse(BaseModel):

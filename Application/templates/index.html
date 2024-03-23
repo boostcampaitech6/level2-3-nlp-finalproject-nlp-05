@@ -34,6 +34,8 @@
         $('body').sakura();
     });
 
+    var category = "";
+
     $(document).ready(function() {
     const emotionsByCategory = {
         "기쁨": ["기쁘다", "즐겁다", "감사하다", "행복하다"],
@@ -45,7 +47,7 @@
     };
 
     $(".category-btn").click(function() {
-        const category = $(this).attr("data-category");
+        category = $(this).attr("data-category");
         const emotions = emotionsByCategory[category];
         const container = $("#emotionOptions");
         container.empty(); // 기존의 감정들을 지웁니다.
@@ -88,7 +90,7 @@
                 type: "POST",
                 url: "/api/line",
                 contentType: "application/json", // 요청의 Content-Type을 application/json으로 명시
-                data: JSON.stringify({ 'emotion': emotion }), // 객체를 JSON 문자열로 변환
+                data: JSON.stringify({'category': category, 'emotion': emotion}), // 객체를 JSON 문자열로 변환
                 success: function (response) {
                     lines = response.lines
                     showLine(lines)

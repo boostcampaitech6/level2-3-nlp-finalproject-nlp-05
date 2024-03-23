@@ -46,13 +46,15 @@ async def home():
 @app.post("/api/line")
 async def generate_line(request: LineRequest):
     model, tokenizer = get_model_tokenizer()
-    emotion = request.emotion
-    inputs = tokenizer(emotion, return_tensors="pt")
+    global category
+    global emotion
+    category, emotion = request.category, request.emotion
+    inputs = tokenizer(category + '#' + emotion, return_tensors="pt")
     lines = []
 
     for i in range(3):
         output = model.generate(**inputs, do_sample=True)
-        decoded_output = tokenizer.decode(output[0], temperature=0.2, top_k=5, skip_special_tokens=True)
+        decoded_output = tokenizer.decode(output[0], temperature=5.0, skip_special_tokens=True)
         lines.append(decoded_output)
 
     return LineResponse(lines=lines)
@@ -69,14 +71,14 @@ async def generate_poem(request: PoemRequest):
     
     # 이미지 생성
     # OpenAI API_KEY 설정
-    # API_KEY = tokens.openai.api_key
-    # client = OpenAI(api_key=API_KEY)
-    # response = client.images.generate(model='dall-e-3',
-    #                                   prompt=line,
-    #                                   size='1024x1024',
-    #                                   quality='standard',
-    #                                   n=1)
-    # image_url = response.data[0].url
+    API_KEY = tokens.openai.api_key_kiho
+    client = OpenAI(api_key=API_KEY)
+    response = client.images.generate(model='dall-e-3',
+                                      prompt=line,
+                                      size='1024x1024',
+                                      quality='standard',
+                                      n=1)
+    image_url = response.data[0].url
     
     # 시 생성 
     input_ids = tokenizer.encode(line, add_special_tokens=True, return_tensors='pt')
@@ -97,7 +99,7 @@ async def generate_poem(request: PoemRequest):
     poem = poem.replace("<yun> ", "\n").replace("<s> ", "").replace("</s>", "")
 
     return PoemResponse(poem=poem,
-                        image_url="https://via.placeholder.com/150")
+                        image_url=image_url)
 
 
 @app.post("/api/upload")
@@ -117,7 +119,7 @@ async def upload(request: UploadRequest):
     # instagram 게시할 것들
     post_payload = {
         'image_url': image_url, # 이미지
-        'caption': f'[{id}님의 "오늘의 시"]\n\n'+poem, # 해시태그 및 기타 입력
+        'caption': f'#오늘의시 #{category} #{emotion}\n\n[{id}님의 "오늘의 시"]\n\n'+poem, # 해시태그 및 기타 입력
         'user_tags': "[ { username:'"+id+"', x: 0, y: 0 } ]", # 태그될 유저 계졍(사용자)
         'access_token': access_token
     }
