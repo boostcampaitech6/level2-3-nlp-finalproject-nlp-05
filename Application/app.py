@@ -53,7 +53,7 @@ async def generate_line(request: LineRequest):
     lines = []
 
     for i in range(3):
-        output = model.generate(**inputs, temperature=1.0, do_sample=True)
+        output = model.generate(**inputs, temperature=1.2, min_length=8, max_length=32, do_sample=True)
         decoded_output = tokenizer.decode(output[0], skip_special_tokens=True)
         lines.append(decoded_output)
 
@@ -90,17 +90,17 @@ async def generate_poem(request: PoemRequest):
 
      # 이미지 생성
     # OpenAI API_KEY 설정
-    API_KEY = tokens.openai.api_key_kiho
-    client = OpenAI(api_key=API_KEY)
-    response = client.images.generate(model='dall-e-3',
-                                      prompt=poem,
-                                      size='1024x1024',
-                                      quality='standard',
-                                      n=1)
-    image_url = response.data[0].url
+    # API_KEY = tokens.openai.api_key_kiho
+    # client = OpenAI(api_key=API_KEY)
+    # response = client.images.generate(model='dall-e-3',
+    #                                   prompt=poem,
+    #                                   size='1024x1024',
+    #                                   quality='standard',
+    #                                   n=1)
+    # image_url = response.data[0].url
 
     return PoemResponse(poem=poem,
-                        image_url=image_url)
+                        image_url="https://via.placeholder.com/150")
 
 
 @app.post("/api/upload")
