@@ -120,7 +120,7 @@ class DataTrainingArguments:
         metadata={"help": "The name of the column in the datasets containing the summaries (for summarization)."},
     )
     train_file: Optional[str] = field(
-        default='../data/train_final.json', metadata={"help": "The input training data file (a jsonlines or csv file)."}
+        default='../data/train.json', metadata={"help": "The input training data file (a jsonlines or csv file)."}
     )
     validation_file: Optional[str] = field(
         default=None,
@@ -208,7 +208,7 @@ class DataTrainingArguments:
         },
     )
     source_prefix: Optional[str] = field(
-        default=None, metadata={"help": "A prefix to add before every source text (useful for T5 models)."}
+        default="다음 감정을 나타내는 은유적 표현을 생성해줘: ", metadata={"help": "A prefix to add before every source text (useful for T5 models)."}
     )
 
     def __post_init__(self):
@@ -516,7 +516,7 @@ def main():
     #     return result
 
     # Initialize our Trainer
-    training_args.num_train_epochs = 30
+    training_args.num_train_epochs = 50
     training_args.save_strategy = 'no'
     trainer = Seq2SeqTrainer(
         model=model,

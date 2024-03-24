@@ -46,12 +46,14 @@ async def home():
 @app.post("/api/line")
 async def generate_line(request: LineRequest):
     model, tokenizer = get_model_tokenizer()
+    source_prefix = "다음 감정을 나타내는 은유적 표현을 생성해줘: "
+    global emotion
     emotion = request.emotion
-    inputs = tokenizer(emotion, return_tensors="pt")
+    inputs = tokenizer(source_prefix + emotion, return_tensors="pt")
     lines = []
 
     for i in range(3):
-        output = model.generate(**inputs, top_k=4, do_sample=True)
+        output = model.generate(**inputs, temperature=1.2, min_length=8, max_length=32, do_sample=True)
         decoded_output = tokenizer.decode(output[0], skip_special_tokens=True)
         lines.append(decoded_output)
 
@@ -66,8 +68,6 @@ async def generate_poem(request: PoemRequest):
     global image_url
 
     line = request.line + '\n'
-    
-   
     
     # 시 생성 
     input_ids = tokenizer.encode(line, add_special_tokens=True, return_tensors='pt')
@@ -84,22 +84,23 @@ async def generate_poem(request: PoemRequest):
         early_stopping=True, # EOS token을 만나면 조기 종료
         eos_token_id=tokenizer.eos_token_id
     )
+
     poem = tokenizer.decode(output[0].tolist(), skip_special_tokens=False)
     poem = poem.replace("<yun> ", "\n").replace("<s> ", "").replace("</s>", "")
 
      # 이미지 생성
     # OpenAI API_KEY 설정
-    API_KEY = tokens.openai.api_key
-    client = OpenAI(api_key=API_KEY)
-    response = client.images.generate(model='dall-e-3',
-                                      prompt=poem,
-                                      size='1024x1024',
-                                      quality='standard',
-                                      n=1)
-    image_url = response.data[0].url
+    # API_KEY = tokens.openai.api_key_kiho
+    # client = OpenAI(api_key=API_KEY)
+    # response = client.images.generate(model='dall-e-3',
+    #                                   prompt=poem,
+    #                                   size='1024x1024',
+    #                                   quality='standard',
+    #                                   n=1)
+    # image_url = response.data[0].url
 
     return PoemResponse(poem=poem,
-                        image_url=image_url)
+                        image_url="https://via.placeholder.com/150")
 
 
 @app.post("/api/upload")
@@ -119,7 +120,7 @@ async def upload(request: UploadRequest):
     # instagram 게시할 것들
     post_payload = {
         'image_url': image_url, # 이미지
-        'caption': f'[{id}님의 "오늘의 시"]\n\n'+poem, # 해시태그 및 기타 입력
+        'caption': f'#오늘의시 #{emotion}\n\n[{id}님의 오늘의 시]\n\n' + poem, # 해시태그 및 기타 입력
         'user_tags': "[ { username:'"+id+"', x: 0, y: 0 } ]", # 태그될 유저 계졍(사용자)
         'access_token': access_token
     }
