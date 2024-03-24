@@ -208,7 +208,7 @@ class DataTrainingArguments:
         },
     )
     source_prefix: Optional[str] = field(
-        default=None, metadata={"help": "A prefix to add before every source text (useful for T5 models)."}
+        default="다음 감정을 나타내는 은유적 표현을 생성해줘: ", metadata={"help": "A prefix to add before every source text (useful for T5 models)."}
     )
 
     def __post_init__(self):
