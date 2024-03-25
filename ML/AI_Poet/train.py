@@ -7,7 +7,7 @@ import sys
 from transformers import TrainingArguments, Trainer
 
 
-class Poem_Dataet(Dataset):
+class Poem_Dataset(Dataset):
     def __init__ (self, train_dataset, tokenizer):
         self.dataset = train_dataset
         self.tokenizer = tokenizer
@@ -30,7 +30,7 @@ class Poem_Dataet(Dataset):
         return {
             "input_ids": input_ids,
             "attention_mask": attention_mask,
-            "label_ids": label_ids
+            "labels": label_ids
         }
 
 
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     dataset = pd.read_csv(file_path)
     dataset = dataset[dataset["num_lines"] > 5]
     train_dataset = list(dataset["poem"])
-    train_data = Poem_Dataet(train_dataset, tokenizer)
+    train_data = Poem_Dataset(train_dataset, tokenizer)
 
     # set TrainingArguments
     training_args=TrainingArguments(
@@ -65,8 +65,9 @@ if __name__ == "__main__":
         save_steps=1000,
         save_total_limit=1,
         learning_rate= 1e-05,
-        per_device_train_batch_size=4,
-        num_train_epochs=10,
+        per_device_train_batch_size=1,
+        gradient_accumulation_steps=16,
+        num_train_epochs=20,
         lr_scheduler_type="linear",
         warmup_steps=1000,
         seed=42,
@@ -82,8 +83,4 @@ if __name__ == "__main__":
     )
 
     # model train & save
-    if torch.__version__ >= "2" and sys.platform != "win32":
-        model = torch.compile(model)
-
-    with torch.autocast("cuda"):
-        trainer.train()
+    trainer.train()
