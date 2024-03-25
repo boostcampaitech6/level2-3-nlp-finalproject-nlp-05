@@ -53,7 +53,7 @@ async def generate_line(request: LineRequest):
     lines = []
 
     for i in range(3):
-        output = model.generate(**inputs, temperature=1.2, min_length=8, max_length=32, do_sample=True)
+        output = model.generate(**inputs, temperature=1.0, min_length=8, max_length=32, do_sample=True)
         decoded_output = tokenizer.decode(output[0], skip_special_tokens=True)
         lines.append(decoded_output)
 
@@ -129,12 +129,12 @@ async def upload(request: UploadRequest):
     post_url = 'https://graph.facebook.com/v19.0/{}/media'.format( IG_user_id )
 
 #     # instagram 게시할 것들
-#     post_payload = {
-#         'image_url': image_url, # 이미지
-#         'caption': f'[{id}님의 "오늘의 시"]\n\n'+poem, # 해시태그 및 기타 입력
-#         'user_tags': "[ { username:'"+id+"', x: 0, y: 0 } ]", # 태그될 유저 계졍(사용자)
-#         'access_token': access_token
-#     }
+    post_payload = {
+        'image_url': image_url, # 이미지
+        'caption': f'#오늘의시 #{emotion}\n\n[{id}님의 오늘의 시]\n\n' + poem, # 해시태그 및 기타 입력
+        'user_tags': "[ { username:'"+id+"', x: 0, y: 0 } ]", # 태그될 유저 계졍(사용자)
+        'access_token': access_token
+    }
 
     post_request = requests.post(
         post_url,
