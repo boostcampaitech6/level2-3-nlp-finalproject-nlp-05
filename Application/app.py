@@ -69,6 +69,17 @@ async def generate_poem(request: PoemRequest):
 
     line = request.line + '\n'
     
+    # # 이미지 생성
+    # # OpenAI API_KEY 설정
+    # API_KEY = tokens.openai.api_key
+    # client = OpenAI(api_key=API_KEY)
+    # response = client.images.generate(model='dall-e-3',
+    #                                   prompt=line,
+    #                                   size='1024x1024',
+    #                                   quality='standard',
+    #                                   n=1)
+    # image_url = response.data[0].url
+    
     # 시 생성 
     input_ids = tokenizer.encode(line, add_special_tokens=True, return_tensors='pt')
     output = model.generate(
@@ -117,13 +128,13 @@ async def upload(request: UploadRequest):
 
     post_url = 'https://graph.facebook.com/v19.0/{}/media'.format( IG_user_id )
 
-    # instagram 게시할 것들
-    post_payload = {
-        'image_url': image_url, # 이미지
-        'caption': f'#오늘의시 #{emotion}\n\n[{id}님의 오늘의 시]\n\n' + poem, # 해시태그 및 기타 입력
-        'user_tags': "[ { username:'"+id+"', x: 0, y: 0 } ]", # 태그될 유저 계졍(사용자)
-        'access_token': access_token
-    }
+#     # instagram 게시할 것들
+#     post_payload = {
+#         'image_url': image_url, # 이미지
+#         'caption': f'[{id}님의 "오늘의 시"]\n\n'+poem, # 해시태그 및 기타 입력
+#         'user_tags': "[ { username:'"+id+"', x: 0, y: 0 } ]", # 태그될 유저 계졍(사용자)
+#         'access_token': access_token
+#     }
 
     post_request = requests.post(
         post_url,
