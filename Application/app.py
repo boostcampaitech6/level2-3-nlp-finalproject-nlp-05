@@ -69,12 +69,12 @@ async def generate_poem(request: PoemRequest):
 
     line = request.line + '\n'
     
-    # # 이미지 생성
-    # # OpenAI API_KEY 설정
+    # 이미지 생성
+    # OpenAI API_KEY 설정
     # API_KEY = tokens.openai.api_key
     # client = OpenAI(api_key=API_KEY)
     # response = client.images.generate(model='dall-e-3',
-    #                                   prompt=line,
+    #                                   prompt="Create a watercolor scene for the following sentence. Consider the factors to reinforce the feelings that fit the sentence.\n\n" + line,
     #                                   size='1024x1024',
     #                                   quality='standard',
     #                                   n=1)
@@ -98,17 +98,6 @@ async def generate_poem(request: PoemRequest):
 
     poem = tokenizer.decode(output[0].tolist(), skip_special_tokens=False)
     poem = poem.replace("<yun> ", "\n").replace("<s> ", "").replace("</s>", "")
-
-     # 이미지 생성
-    # OpenAI API_KEY 설정
-    # API_KEY = tokens.openai.api_key_kiho
-    # client = OpenAI(api_key=API_KEY)
-    # response = client.images.generate(model='dall-e-3',
-    #                                   prompt=poem,
-    #                                   size='1024x1024',
-    #                                   quality='standard',
-    #                                   n=1)
-    # image_url = response.data[0].url
 
     return PoemResponse(poem=poem,
                         image_url="https://via.placeholder.com/150")
