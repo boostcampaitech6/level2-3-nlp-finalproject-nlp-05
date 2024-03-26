@@ -211,7 +211,7 @@
     }
 
     function uploadPoem() {
-        var instagramID = prompt("인스타 아이디를 입력해 주세요.", "본인의 인스타 아이디");
+        var instagramID = prompt("오늘의 시 인스타그램 공식 계정(@pomeoftoday)에 공유해보세요!\n아이디를 입력하시면 생성된 시와 이미지가 태그와 함께 공유됩니다.", "본인의 인스타 아이디");
         
         if(instagramID) {
             // 로딩 화면
@@ -337,7 +337,7 @@
                 </div>
                 <br>
                 <div class="flex justify-center gap-4 mb-4">
-                    <button id="saveButton" class="text-sm bg-blue-500 hover:bg-blue-700 text-white font-semibold py-1.5 px-4 rounded" onclick="uploadPoem()">이미지와 시 공유하기</button>
+                    <button id="saveButton" class="text-sm bg-blue-500 hover:bg-blue-700 text-white font-semibold py-1.5 px-4 rounded" onclick="uploadPoem()">인스타그램에 공유하기</button>
                     <button class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-1.5 px-4 rounded" onclick="showMainPage()">메인으로 돌아가기</button>
                 </div>
             </div>
