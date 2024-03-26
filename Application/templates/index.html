@@ -224,6 +224,7 @@
                 data: JSON.stringify({ 'instagramID': instagramID }), // 객체를 JSON 문자열로 변환
                 success: function (response) {
                     alert("업로드 완료!");
+                    window.open('https://www.instagram.com/poemoftoday');
                 },
                 complete: function() {
                     // 로딩 화면 숨김

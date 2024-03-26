@@ -68,10 +68,13 @@ async def generate_poem(request: PoemRequest):
     global image_url
 
     line = request.line + '\n'
+
+    # 임시 이미지
+    image_url="https://via.placeholder.com/150" 
     
     # 이미지 생성
     # OpenAI API_KEY 설정
-    # API_KEY = tokens.openai.api_key
+    # API_KEY = tokens.openai.api
     # client = OpenAI(api_key=API_KEY)
     # response = client.images.generate(model='dall-e-3',
     #                                   prompt="Create a watercolor scene for the following sentence. Consider the factors to reinforce the feelings that fit the sentence.\n\n" + line,
@@ -100,7 +103,7 @@ async def generate_poem(request: PoemRequest):
     poem = poem.replace("<yun> ", "\n").replace("<s> ", "").replace("</s>", "")
 
     return PoemResponse(poem=poem,
-                        image_url="https://via.placeholder.com/150")
+                        image_url=image_url)       
 
 
 @app.post("/api/upload")
@@ -117,7 +120,7 @@ async def upload(request: UploadRequest):
 
     post_url = 'https://graph.facebook.com/v19.0/{}/media'.format( IG_user_id )
 
-#     # instagram 게시할 것들
+    # instagram 게시할 것들
     post_payload = {
         'image_url': image_url, # 이미지
         'caption': f'#오늘의시 #{emotion}\n\n[{id}님의 오늘의 시]\n\n' + poem, # 해시태그 및 기타 입력
