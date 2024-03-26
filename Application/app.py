@@ -107,10 +107,10 @@ async def upload(request: UploadRequest):
     poem = request.poem 
     image_url = request.image_url
 
-    IG_user_id = tokens.facebook.IG_user_id
+    IG_user_id = os.getenv('facebook_ig_user_id')
 
-    # The access_token is valid until 2024.05.17. 
-    access_token = tokens.facebook.access_token
+    # The access_token is valid until 2024.05.22. 
+    access_token = os.getenv('facebook_access_token')
 
     post_url = 'https://graph.facebook.com/v19.0/{}/media'.format( IG_user_id )
 
