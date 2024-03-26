@@ -11,7 +11,6 @@ from dependency import load_model_tokenizer, get_model_tokenizer, load_poem_mode
 from config import config
 from loguru import logger
 from openai import OpenAI
-from omegaconf import OmegaConf
 import requests
 import json
 import os
