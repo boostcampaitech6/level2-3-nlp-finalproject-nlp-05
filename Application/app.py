@@ -89,12 +89,11 @@ async def generate_poem(request: PoemRequest):
         input_ids=input_ids,
         temperature=0.5, # 생성 다양성 조절
         min_length=32,   # 생성되는 문장의 최소 길이
-        max_length=128, # 생성되는 문장의 최대 길이
-        top_k=25, # 높은 확률을 가진 top-k 토큰만 고려
+        max_length=256, # 생성되는 문장의 최대 길이
+        top_k=10, # 높은 확률을 가진 top-k 토큰만 고려
         top_p=0.95, # 누적 확률이 p를 초과하는 토큰은 제외
         repetition_penalty=1.2, # 반복을 줄이는 패널티
         do_sample=True, # 샘플링 기반 생성 활성화
-        num_return_sequences=1, # 생성할 시퀀스의 수
         early_stopping=True, # EOS token을 만나면 조기 종료
         eos_token_id=tokenizer.eos_token_id
     )
