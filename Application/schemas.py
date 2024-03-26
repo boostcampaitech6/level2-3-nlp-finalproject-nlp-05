@@ -8,7 +8,7 @@ class LineResponse(BaseModel):
     lines: list
 
 class PoemRequest(BaseModel):
-    line: Optional[str] = None
+    line: Optional[str] = Field(default='Line is not selected')
 
 class PoemResponse(BaseModel):
     poem: str
@@ -16,7 +16,9 @@ class PoemResponse(BaseModel):
 
 class UploadRequest(BaseModel):
     instagramID: Optional[str] = None
-    line: Optional[str] = Field(default='Line is not selected')
+    emotion: Optional[str]
+    poem: Optional[str]
+    image_url: Optional[str]
 
 class UploadExceptionResponse(BaseModel):
     error: bool
