@@ -14,9 +14,8 @@ from openai import OpenAI
 from omegaconf import OmegaConf
 import requests
 import json
+import os
 
-
-tokens = OmegaConf.load(f'../tokens.yaml')
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -59,18 +58,24 @@ async def generate_poem(request: PoemRequest):
     line = request.line + '\n'
 
     # 임시 이미지
-    image_url="https://via.placeholder.com/150" 
+    # image_url="https://via.placeholder.com/150" 
     
     # 이미지 생성
     # OpenAI API_KEY 설정
-    # API_KEY = tokens.openai.api_key_kiho
-    # client = OpenAI(api_key=API_KEY)
-    # response = client.images.generate(model='dall-e-3',
-    #                                   prompt="Create a watercolor scene for the following sentence. Consider the factors to reinforce the feelings that fit the sentence.\n\n" + line,
-    #                                   size='1024x1024',
-    #                                   quality='standard',
-    #                                   n=1)
-    # image_url = response.data[0].url
+    API_KEY_1 = os.getenv('openai_kiho')
+    API_KEY_2 = os.getenv('openai_sanggi')
+    API_KEY_3 = os.getenv('openai_gunwoo')
+    API_KEY_4 = os.getenv('openai_jaehyeok')
+
+    API_KEY = API_KEY_1
+    
+    client = OpenAI(api_key=API_KEY)
+    response = client.images.generate(model='dall-e-3',
+                                      prompt="Create a watercolor scene for the following sentence. Consider the factors to reinforce the feelings that fit the sentence.\n\n" + line,
+                                      size='1024x1024',
+                                      quality='standard',
+                                      n=1)
+    image_url = response.data[0].url
     
     # 시 생성 
     input_ids = tokenizer.encode(line, add_special_tokens=True, return_tensors='pt')
