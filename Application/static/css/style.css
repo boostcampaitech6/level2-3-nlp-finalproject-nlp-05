@@ -28,7 +28,7 @@ h1, p {
 }
 
 #emotionButton {
-    background-color: #ce7995; 
+    background-color: #ce7995;
     border: none;
     transition: background-color 0.3s ease;
 }
@@ -38,33 +38,33 @@ h1, p {
 }
 
 #lineButton {
-    background-color: #A2566F; 
+    background-color: #ce7995;
     border: none;
     transition: background-color 0.3s ease;
 }
 
 #lineButton:hover {
-    background-color: #D17890; 
+    background-color: #b94061;
 }
 
 #submitButton {
-    background-color: #A2566F; 
+    background-color: #ce7995;
     border: none;
     transition: background-color 0.3s ease;
 }
 
 #submitButton:hover {
-    background-color: #D17890; 
+    background-color: #b94061;
 }
 
 #saveButton {
-    background-color: #A2566F; 
+    background-color: #ce7995;
     border: none;
     transition: background-color 0.3s ease;
 }
 
 #saveButton:hover {
-    background-color: #D17890; 
+    background-color: #b94061;
 }
 
 .rounded-lg {
