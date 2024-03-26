@@ -74,7 +74,7 @@ async def generate_poem(request: PoemRequest):
     
     # 이미지 생성
     # OpenAI API_KEY 설정
-    # API_KEY = tokens.openai.api
+    # API_KEY = tokens.openai.api_key
     # client = OpenAI(api_key=API_KEY)
     # response = client.images.generate(model='dall-e-3',
     #                                   prompt="Create a watercolor scene for the following sentence. Consider the factors to reinforce the feelings that fit the sentence.\n\n" + line,
@@ -141,8 +141,8 @@ async def upload(request: UploadRequest):
         # 로깅을 추가하여 문제를 진단할 수 있도록 함
         logger.error(f"KeyError: 'id' not found in the response. Response was: {result}. Image URL: {image_url}")
         # 여기서 오류를 처리하거나 적절한 HTTP 응답을 반환할 수 있습니다.
-        if result['message'] == 'Invalid user id':
-            return UploadExceptionResponse(message='비공개 계정이거나 유효하지 않은 계정입니다.')
+        if result['error']['message'] == 'Invalid user id':
+            return UploadExceptionResponse(error=True)
         raise HTTPException(status_code=500, detail="Internal Server Error: KeyError for 'id'.")
 
     publish_url = 'https://graph.facebook.com/v19.0/{}/media_publish'.format( IG_user_id )
