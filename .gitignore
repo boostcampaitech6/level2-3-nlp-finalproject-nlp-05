@@ -14,3 +14,4 @@ ML/Metaphor_Gen/code/.lock
 ML/AI_Poet/output/*
 Application/__pycache__
 tokens.yaml
+.venv/*
