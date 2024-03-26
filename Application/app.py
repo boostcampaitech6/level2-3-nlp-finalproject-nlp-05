@@ -74,7 +74,7 @@ async def generate_poem(request: PoemRequest):
     
     # 이미지 생성
     # OpenAI API_KEY 설정
-    # API_KEY = tokens.openai.api_key_kiho
+    # API_KEY = tokens.openai.api_key
     # client = OpenAI(api_key=API_KEY)
     # response = client.images.generate(model='dall-e-3',
     #                                   prompt="Create a watercolor scene for the following sentence. Consider the factors to reinforce the feelings that fit the sentence.\n\n" + line,
