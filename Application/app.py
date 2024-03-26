@@ -18,12 +18,6 @@ import json
 
 tokens = OmegaConf.load(f'../tokens.yaml')
 
-
-# 시와 이미지 url을 전역변수로 관리하기 위함
-poem = None
-image_url = None
-
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # 모델&토큰나이저 로드
@@ -47,7 +41,6 @@ async def home():
 async def generate_line(request: LineRequest):
     model, tokenizer = get_model_tokenizer()
     source_prefix = "다음 감정을 나타내는 은유적 표현을 생성해줘: "
-    global emotion
     emotion = request.emotion
     inputs = tokenizer(source_prefix + emotion, return_tensors="pt")
     lines = []
@@ -63,10 +56,6 @@ async def generate_line(request: LineRequest):
 @app.post("/api/poem")
 async def generate_poem(request: PoemRequest):
     model, tokenizer = get_poem_model_tokenizer()
-    
-    global poem
-    global image_url
-
     line = request.line + '\n'
 
     # 임시 이미지
@@ -74,7 +63,7 @@ async def generate_poem(request: PoemRequest):
     
     # 이미지 생성
     # OpenAI API_KEY 설정
-    # API_KEY = tokens.openai.api_key
+    # API_KEY = tokens.openai.api_key_kiho
     # client = OpenAI(api_key=API_KEY)
     # response = client.images.generate(model='dall-e-3',
     #                                   prompt="Create a watercolor scene for the following sentence. Consider the factors to reinforce the feelings that fit the sentence.\n\n" + line,
@@ -107,10 +96,11 @@ async def generate_poem(request: PoemRequest):
 
 @app.post("/api/upload")
 async def upload(request: UploadRequest):
-    global poem
-    global image_url
 
     id = request.instagramID
+    emotion = request.emotion
+    poem = request.poem 
+    image_url = request.image_url
 
     IG_user_id = tokens.facebook.IG_user_id
 

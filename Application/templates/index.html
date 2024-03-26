@@ -108,6 +108,9 @@
     }
 
     function generateLine(emotion) {
+        var secondPageElement = document.getElementById('secondPage');
+        secondPageElement.setAttribute('data-emotion', emotion);
+
         $.ajax({
                 type: "POST",
                 url: "/api/line",
@@ -170,8 +173,8 @@
                 data: JSON.stringify({ 'line': line }), // 객체를 JSON 문자열로 변환
                 success: function (response) {
                     poem = response.poem
-                    image = response.image_url
-                    showPoem(poem, image)
+                    image_url = response.image_url
+                    showPoem(poem, image_url)
                 },
                 complete: function() {
                     // 요청이 완료되면 로딩 텍스트 숨기기
@@ -183,16 +186,20 @@
                 });
     }
 
-    function showPoem(poem, image) {
+    function showPoem(poem, image_url) {
         document.getElementById('secondPage').style.display = 'none';
         document.getElementById('thirdPage').style.display = 'block';
         
         var poemContentElement = document.getElementById('poemContent');
         poemContentElement.textContent = poem;
 
-        document.querySelector("#thirdPage img").src = image;
+        document.querySelector("#thirdPage img").src = image_url;
         document.querySelector("#thirdPage img").style.width = "400px";
         document.querySelector("#thirdPage img").style.height = "400px";
+
+        var thirdPageElement = document.getElementById('thirdPage');
+        thirdPageElement.setAttribute('data-poem', poem);
+        thirdPageElement.setAttribute('data-image-url', image_url);
     }
 
     function showBackPage() {
@@ -211,7 +218,12 @@
     }
 
     function uploadPoem() {
+        var secondPageElement = document.getElementById('secondPage');
+        var thirdPageElement = document.getElementById('thirdPage');
         var instagramID = prompt("오늘의 시 인스타그램 공식 계정(@pomeoftoday)에 공유해보세요!\n아이디를 입력하시면 생성된 시와 이미지가 태그와 함께 공유됩니다.", "본인의 인스타 아이디");
+        var emotion = secondPageElement.getAttribute('data-emotion');
+        var poem = thirdPageElement.getAttribute('data-poem');
+        var image_url = thirdPageElement.getAttribute('data-image-url');
         
         if(instagramID) {
             // 로딩 화면
@@ -221,7 +233,7 @@
                 type: "POST",
                 url: "/api/upload",
                 contentType: "application/json", // 요청의 Content-Type을 application/json으로 명시
-                data: JSON.stringify({ 'instagramID': instagramID }), // 객체를 JSON 문자열로 변환
+                data: JSON.stringify({ 'instagramID': instagramID, 'emotion': emotion, 'poem': poem, 'image_url': image_url }), // 객체를 JSON 문자열로 변환
                 success: function (response) {
                     if (response.error) {
                         alert("비공개 계정이거나 유효하지 않은 계정입니다.");
