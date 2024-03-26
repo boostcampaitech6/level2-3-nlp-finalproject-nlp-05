@@ -17,3 +17,6 @@ class PoemResponse(BaseModel):
 class UploadRequest(BaseModel):
     instagramID: Optional[str] = None
     line: Optional[str] = Field(default='Line is not selected')
+
+class UploadExceptionResponse(BaseModel):
+    message: str

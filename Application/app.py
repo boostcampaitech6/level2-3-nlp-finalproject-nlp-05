@@ -6,7 +6,7 @@ from typing import Optional
 import uvicorn
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 from contextlib import asynccontextmanager
-from schemas import LineRequest, LineResponse, PoemRequest, PoemResponse, UploadRequest
+from schemas import LineRequest, LineResponse, PoemRequest, PoemResponse, UploadRequest, UploadExceptionResponse
 from dependency import load_model_tokenizer, get_model_tokenizer, load_poem_model_tokenizer, get_poem_model_tokenizer
 from config import config
 from loguru import logger
@@ -128,13 +128,13 @@ async def upload(request: UploadRequest):
 
     post_url = 'https://graph.facebook.com/v19.0/{}/media'.format( IG_user_id )
 
-#     # instagram 게시할 것들
-#     post_payload = {
-#         'image_url': image_url, # 이미지
-#         'caption': f'[{id}님의 "오늘의 시"]\n\n'+poem, # 해시태그 및 기타 입력
-#         'user_tags': "[ { username:'"+id+"', x: 0, y: 0 } ]", # 태그될 유저 계졍(사용자)
-#         'access_token': access_token
-#     }
+    # instagram 게시할 것들
+    post_payload = {
+        'image_url': image_url, # 이미지
+        'caption': f'[{id}님의 "오늘의 시"]\n\n'+poem, # 해시태그 및 기타 입력
+        'user_tags': "[ { username:'"+id+"', x: 0, y: 0 } ]", # 태그될 유저 계졍(사용자)
+        'access_token': access_token
+    }
 
     post_request = requests.post(
         post_url,
@@ -149,6 +149,8 @@ async def upload(request: UploadRequest):
         # 로깅을 추가하여 문제를 진단할 수 있도록 함
         logger.error(f"KeyError: 'id' not found in the response. Response was: {result}. Image URL: {image_url}")
         # 여기서 오류를 처리하거나 적절한 HTTP 응답을 반환할 수 있습니다.
+        if result['message'] == 'Invalid user id':
+            return UploadExceptionResponse(message='비공개 계정이거나 유효하지 않은 계정입니다.')
         raise HTTPException(status_code=500, detail="Internal Server Error: KeyError for 'id'.")
 
     publish_url = 'https://graph.facebook.com/v19.0/{}/media_publish'.format( IG_user_id )
