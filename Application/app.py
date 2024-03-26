@@ -155,7 +155,8 @@ async def upload(request: UploadRequest):
         publish_url, 
         data=publish_payload
     )
-    
+
+    return UploadExceptionResponse(error=False)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
