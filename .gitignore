@@ -1,0 +1,17 @@
+__pycache__/*
+.cache/*
+.conda
+bash_history.sh
+.git
+.github
+.gitconfig
+.bash_history
+nltk_data/*
+ML/Metaphor_Gen/code/outputs
+ML/Metaphor_Gen/code/.lock
+.local
+.ipython
+ML/AI_Poet/output/*
+Application/__pycache__
+tokens.yaml
+.venv/*
