@@ -25,11 +25,11 @@
 
 ## 모델 소개
 ### 은유적 구절 생성
-![metaphor-model](https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/f1c2c63d-768b-43e6-98a4-21e194e41c90)
+<img width="750" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/f1c2c63d-768b-43e6-98a4-21e194e41c90">
 - 은유적 구절 생성 모델로 Encdoer-Decoder 모델인 google/mt5-large 모델을 사용했습니다.
 - 모델 input 앞에 수행할 task를 나타내는 prefix를 추가하여 모델을 학습시켰습니다.
 ### 시 생성
-![poem-model](https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/f1a40df7-dff8-4dc6-bf34-9c79c56f2fbc)
+<img width="750" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/f1a40df7-dff8-4dc6-bf34-9c79c56f2fbc">
 - 시 생성 모델로 Decoder 모델인 skt/ko-gpt-trinity-1.2B-v0.5 모델을 사용했습니다.
 - 연 구분 문자를 special token에 추가하여 더 명확한 연 구분을 할 수 있도록 학습시켰습니다.
 
