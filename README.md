@@ -41,6 +41,7 @@
 ### 1. 은유적 구절 생성
 <img width="500" alt="1" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/61c85cbc-0ea4-42d7-837c-f9905b765fad">
 <img width="500" alt="2" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/c1937f81-d195-4c91-b459-239a67b2ea86">
+
 - 사용자가 선택한 감정을 바탕으로 그와 어울리는 은유적 구절을 생성합니다.
 - 선택할 수 있는 감정은 크게 5가지로 각 카테고리에 4개의 단어가 존재합니다.
 - 총 3개의 문장을 생성하며, 사용자는 1개를 선택할 수 있습니다.
@@ -52,6 +53,7 @@
 
 ### 2. 시와 이미지 생성
 <img width="500" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/690f17c8-517b-408c-9b57-6ba08312e7f4">
+
 - 위에서 생성한 문장을 첫 행으로 하는 시를 생성합니다.
 - 시를 생성할 때, 시의 구조와 전체적인 주제 흐름을 고려합니다.
 - 그림은 첫 행에서 드러나는 감정과 분위기를 기반으로 생성됩니다.
@@ -59,6 +61,7 @@
 
 ### 3. SNS 공유
 <img width="500" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/ed7a1e8f-a746-4dcb-b4a5-6ea0d41c890c">
+
 - 생성한 시와 이미지를 오늘의 시 인스타그램 공식 계정(**@poemoftoday**)에 공유할 수 있습니다.
 - **인스타그램에 공유하기** 버튼을 누르고, 자신의 인스타그램 ID를 입력합니다.(비공계 계정 또는 유효하지 않은 계정은 불가)
 - 업로드가 완료되고 **확인** 버튼을 누르면, 업로드된 게시물을 인스타그램에서 확인할 수 있습니다.
