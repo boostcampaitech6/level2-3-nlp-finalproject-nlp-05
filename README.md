@@ -12,25 +12,25 @@
 - 김건우_T6197 : 시 데이터 크롤링 및 전처리, 시 생성 모델 학습
 
 ## 데이터 소개
-### 은유적 구절 생성
+### 은유적 구절
 <img width="500" alt="ChatGPT" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/fa8f4687-85ce-463f-829d-06420f14cc77"><br>
 
 - 한국어 교육을 위한 감정 형용사 선정과 분류 논문에서 서비스에 활용할 감정 형용사를 선정하고, ChatGPT를 활용해 이와 어울리는 은유적 구절을 생성했습니다.
 - 생성한 구절 중 잘 표현한 구절을 골라 프롬프트의 Few-shot으로 활용했습니다.
 - 20가지 감정 형용사에 대해 1000개의 은유적 구절로 구성된 데이터셋을 구축했습니다.
 
-### 시 생성
+### 시
 - '시 사랑 시의 백과사전' 사이트에서 데이터 크롤링을 통해 10만개의 시 데이터를 수집했습니다.
 - 원하는 형태의 시를 생성하기위해, 생성한 은유적 구절의 길이 분포를 기준으로 데이터 전처리를 진행했습니다.
 - 직접 데이터 검수를 통해 수집 과정에서 처리하지 못한 노이즈를 제거했습니다.
 
 ## 모델 소개
-### 은유적 구절 생성
+### 은유적 구절
 <img width="750" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/f1c2c63d-768b-43e6-98a4-21e194e41c90"><br>
 
 - 은유적 구절 생성 모델로 Encdoer-Decoder 모델인 google/mt5-large 모델을 사용했습니다.
 - 모델 input 앞에 수행할 task를 나타내는 prefix를 추가하여 모델을 학습시켰습니다.
-### 시 생성
+### 시
 <img width="750" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/f1a40df7-dff8-4dc6-bf34-9c79c56f2fbc"><br>
 
 - 시 생성 모델로 Decoder 모델인 skt/ko-gpt-trinity-1.2B-v0.5 모델을 사용했습니다.
