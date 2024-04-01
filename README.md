@@ -13,7 +13,8 @@
 
 ## 데이터 소개
 ### 은유적 구절 생성
-<img width="670" alt="ChatGPT" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/fa8f4687-85ce-463f-829d-06420f14cc77">
+<img width="500" alt="ChatGPT" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/fa8f4687-85ce-463f-829d-06420f14cc77">
+
 - 한국어 교육을 위한 감정 형용사 선정과 분류 논문에서 서비스에 활용할 감정 형용사를 선정하고, ChatGPT를 활용해 이와 어울리는 은유적 구절을 생성했습니다.
 - 생성한 구절 중 잘 표현한 구절을 골라 프롬프트의 Few-shot으로 활용했습니다.
 - 20가지 감정 형용사에 대해 1000개의 은유적 구절로 구성된 데이터셋을 구축했습니다.
@@ -26,15 +27,17 @@
 ## 모델 소개
 ### 은유적 구절 생성
 <img width="750" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/f1c2c63d-768b-43e6-98a4-21e194e41c90">
+
 - 은유적 구절 생성 모델로 Encdoer-Decoder 모델인 google/mt5-large 모델을 사용했습니다.
 - 모델 input 앞에 수행할 task를 나타내는 prefix를 추가하여 모델을 학습시켰습니다.
 ### 시 생성
 <img width="750" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/f1a40df7-dff8-4dc6-bf34-9c79c56f2fbc">
+
 - 시 생성 모델로 Decoder 모델인 skt/ko-gpt-trinity-1.2B-v0.5 모델을 사용했습니다.
 - 연 구분 문자를 special token에 추가하여 더 명확한 연 구분을 할 수 있도록 학습시켰습니다.
 
 ## 서비스 구조
-![Alt text](Img/service_architecture.png)
+<img width="574" alt="스크린샷 2024-04-01 오후 5 10 14" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/c03f4a96-8dde-4a35-88ea-068f0b3c255f">
 
 ## 서비스 이용 방법
 
