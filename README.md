@@ -13,6 +13,7 @@
 
 ## 데이터 소개
 ### 은유적 구절 생성
+<img width="500" alt="image (5)" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/04bf8662-417a-4880-a77d-fa61871d94a0">
 <img width="500" alt="ChatGPT" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/fa8f4687-85ce-463f-829d-06420f14cc77">
 
 - 한국어 교육을 위한 감정 형용사 선정과 분류 논문에서 서비스에 활용할 감정 형용사를 선정하고, ChatGPT를 활용해 이와 어울리는 은유적 구절을 생성했습니다.
