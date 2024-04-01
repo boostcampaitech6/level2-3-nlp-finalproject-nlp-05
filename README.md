@@ -9,7 +9,7 @@
 오늘의 시는 사용자의 감정을 입력받아 은유적 구절을 생성하고, 생성한 구절로 어울리는 시와 이미지를 생성하는 웹 어플리케이션입니다. 이 서비스를 통해 사용자는 자신이 느끼는 감정을 문학적 표현을 통해 풍요롭게 표현할 수 있습니다. 또, SNS에 생성한 시와 이미지를 공유하여 다른 사람들과 공감대를 형성할 수 있습니다.
 
 ## 프로젝트 타임라인
-![Alt text](Img/project_timeline.png)
+<img width="750" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/4fecee22-074d-4711-8a44-bb3c3ba8bffc">
 
 ## 데이터 소개
 ### 은유적 구절 생성
