@@ -12,7 +12,7 @@
 - 김건우_T6197 : 시 데이터 크롤링 및 전처리, 시 생성 모델 학습
 
 ## 데이터 소개
-### 은유적 구절
+### 구절
 <img width="500" alt="ChatGPT" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/fa8f4687-85ce-463f-829d-06420f14cc77"><br>
 
 - 한국어 교육을 위한 감정 형용사 선정과 분류 논문에서 서비스에 활용할 감정 형용사를 선정하고, ChatGPT를 활용해 이와 어울리는 은유적 구절을 생성했습니다.
@@ -25,7 +25,7 @@
 - 직접 데이터 검수를 통해 수집 과정에서 처리하지 못한 노이즈를 제거했습니다.
 
 ## 모델 소개
-### 은유적 구절
+### 구절
 <img width="750" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/f1c2c63d-768b-43e6-98a4-21e194e41c90"><br>
 
 - 은유적 구절 생성 모델로 Encdoer-Decoder 모델인 google/mt5-large 모델을 사용했습니다.
@@ -41,7 +41,7 @@
 
 ## 서비스 이용 방법
 
-### 1. 은유적 구절 생성
+### 1. 구절 생성
 <img width="500" alt="1" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/61c85cbc-0ea4-42d7-837c-f9905b765fad">
 <img width="500" alt="2" src="https://github.com/boostcampaitech6/level2-3-nlp-finalproject-nlp-05/assets/121072239/c1937f81-d195-4c91-b459-239a67b2ea86"><br>
 
